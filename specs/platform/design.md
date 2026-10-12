@@ -229,7 +229,7 @@ CREATE INDEX tasks_status_ends ON tasks (status, ends_at);
 CREATE TABLE checkins (
   id TEXT PRIMARY KEY, task_id TEXT NOT NULL, did TEXT NOT NULL, kind TEXT NOT NULL, seq INTEGER,
   checkin_uri TEXT NOT NULL, checkin_cid TEXT NOT NULL, reply_uri TEXT,
-  issued_at INTEGER NOT NULL, expires_at INTEGER NOT NULL,
+  issued_at INTEGER NOT NULL, expires_at INTEGER NOT NULL, instance_key TEXT NOT NULL UNIQUE,
   status TEXT NOT NULL CHECK (status IN ('issued','accepted','expired'))
 );
 CREATE INDEX checkins_task ON checkins (task_id, issued_at);
