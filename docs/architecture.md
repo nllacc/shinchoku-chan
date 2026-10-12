@@ -6,12 +6,12 @@
 
 ```mermaid
 flowchart LR
-  user["ユーザー(ブラウザ)"] -->|OAuth + 書き込み| pds["ユーザーのPDS"]
-  user -->|受理依頼 / 閲覧| worker["Cloudflare Worker<br/>(Static Assets + API + Cron)"]
-  worker -->|getRecord(公開XRPC)| pds
-  worker -->|createRecord / 返信投稿| botpds["BotのPDS"]
+  user["ユーザー（ブラウザ）"] -->|"OAuth と書き込み"| pds["ユーザーのPDS"]
+  user -->|"受理依頼と閲覧"| worker["Cloudflare Worker<br/>Static Assets と API と Cron"]
+  worker -->|"getRecord（公開）"| pds
+  worker -->|"createRecordと返信投稿"| botpds["BotのPDS"]
   worker --> d1[("D1<br/>再構築可能なキャッシュ")]
-  cron["Cron Trigger(5分おき)"] --> worker
+  cron["Cron Trigger（5分おき）"] --> worker
 ```
 
 - Web・API・Bot の定期実行を **1つの Worker** に同居させる（Cron Trigger は Pages Functions では使えないため）。
@@ -25,19 +25,19 @@ flowchart LR
 
 ```mermaid
 sequenceDiagram
-  participant B as Bot(Worker)
-  participant U as ユーザー(ブラウザ)
+  participant B as Bot（Worker）
+  participant U as ユーザー（ブラウザ）
   participant P as ユーザーのPDS
-  B->>B: checkin作成(Botリポジトリ) + 返信投稿(URL付き)
-  U->>P: progress作成(checkinのstrongRefを含む)
-  U->>B: 受理依頼(レコードURI)
-  B->>P: getRecord(公開)
-  alt 受理時刻が issuedAt+30分以内 かつ CID・DID・画像が整合
-    B->>B: receipt(accepted, strongRef, value, receivedAt) を作成
+  B->>B: checkin作成と返信投稿（URL付き）
+  U->>P: progress作成（checkinのstrongRefを含む）
+  U->>B: 受理依頼（レコードURI）
+  B->>P: getRecord（公開）
+  alt 受理時刻が期限内で、CIDとDIDと画像が整合
+    B->>B: receipt（accepted）を作成
   else 期限超過または不整合
     B-->>U: 拒否
   end
-  Note over B: 未報告は tick が receipt(expired) を追記
+  Note over B: 未報告は tick が expired の receipt を追記
 ```
 
 | 論点               | 方針                                                                                         |
