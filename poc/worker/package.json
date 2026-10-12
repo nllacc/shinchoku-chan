@@ -1,0 +1,1 @@
+{"name":"poc-verify","private":true,"type":"module","dependencies":{"@atproto/lex-json":"*","@atproto/lexicon":"*","@ipld/dag-cbor":"*","multiformats":"*"},"devDependencies":{"wrangler":"*"}}
