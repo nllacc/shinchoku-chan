@@ -73,13 +73,13 @@ export const receiptRoutes: Route[] = [
 ]
 ```
 
-| 経路             | 入力               | 成功の応答                                                             |
-| ---------------- | ------------------ | ---------------------------------------------------------------------- |
-| POST /api/enroll | { taskUri }        | 200 { taskId, startedAt, endsAt, windows }                             |
-| POST /api/submit | { recordUri }      | 200 { status: "accepted", receiptUri }                                 |
-| GET /api/checkin | ?id=<確認依頼のid> | 200 { kind, taskSummary, metric, evidenceRequired, expiresAt, status } |
+| 経路             | 入力               | 成功の応答                                                                                            |
+| ---------------- | ------------------ | ----------------------------------------------------------------------------------------------------- |
+| POST /api/enroll | { taskUri }        | 200 { taskId, startedAt, endsAt, windows }                                                            |
+| POST /api/submit | { recordUri }      | 200 { status: "accepted", receiptUri }                                                                |
+| GET /api/checkin | ?id=<確認依頼のid> | 200 { now, did, kind, status, expiresAt, taskRef, checkinRef, metric, evidenceRequired, taskSummary } |
 
-認証は要求しない。偽造できるのは本人のリポジトリへの書き込みだけで、不正な依頼は検証で拒否される。同じ依頼は D1 の一意制約（task_uri、checkin_id）で1回に絞り、2回目以降は最初の結果を返す。
+taskRef と checkinRef は uri と cid の組である。metric は名称・単位・小数桁数・開始値・ゴール値を持つ。認証は要求しない。偽造できるのは本人のリポジトリへの書き込みだけで、不正な依頼は検証で拒否される。同じ依頼は D1 の一意制約（task_uri、checkin_id）で1回に絞り、2回目以降は最初の結果を返す。
 
 ### D-2: 作業の受理 (FR-1, FR-3, FR-4, FR-12)
 
