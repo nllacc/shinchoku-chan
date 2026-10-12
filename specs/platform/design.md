@@ -221,6 +221,7 @@ CREATE TABLE tasks (
   scale INTEGER NOT NULL, start_value INTEGER NOT NULL, goal_value INTEGER NOT NULL,
   duration_days INTEGER NOT NULL, daily_target INTEGER NOT NULL, windows TEXT NOT NULL,
   started_at INTEGER NOT NULL, ends_at INTEGER NOT NULL, evidence_required INTEGER NOT NULL,
+  checked_at INTEGER NOT NULL DEFAULT 0,
   status TEXT NOT NULL CHECK (status IN ('active','ended','withdrawn'))
 );
 CREATE INDEX tasks_did_status ON tasks (did, status);
@@ -239,8 +240,9 @@ CREATE INDEX checkins_open ON checkins (status, expires_at);
 CREATE TABLE reports (
   checkin_id TEXT PRIMARY KEY, task_id TEXT NOT NULL, receipt_uri TEXT NOT NULL, receipt_cid TEXT NOT NULL,
   record_uri TEXT NOT NULL, record_cid TEXT NOT NULL, value INTEGER NOT NULL, received_at INTEGER NOT NULL,
-  note TEXT, revoked TEXT
+  note TEXT, revoked TEXT, checked_at INTEGER NOT NULL DEFAULT 0
 );
+CREATE INDEX reports_checked ON reports (checked_at);
 CREATE INDEX reports_task ON reports (task_id, received_at);
 CREATE TABLE schedule_jobs (
   id INTEGER PRIMARY KEY AUTOINCREMENT, kind TEXT NOT NULL, run_at INTEGER NOT NULL, ref TEXT,
