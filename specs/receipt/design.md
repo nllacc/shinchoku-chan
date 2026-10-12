@@ -211,7 +211,7 @@ export async function recheckRecords(now: number, env: Env): Promise<void>
 | 対象   | checked_at が最も古い reports と tasks。checked_at + recheckIntervalHours が now を超えたものを 10 件まで                                                       |
 | 取得   | 記録の URI から PDS の公開レコードを取得し、CID を保存済みの record_cid と比較する                                                                              |
 | 一致   | checked_at を now に更新する                                                                                                                                    |
-| 不一致 | revocation（reason: tampered、target: 受領証）を Bot のリポジトリへ作り、reports.revoked を設定する                                                             |
+| 不一致 | revocation（reason: tampered、target: 受領証）を Bot のリポジトリへ作り、reports.revoked を設定し、その作業の evaluations.stale を 1 にする                     |
 | 削除   | 報告の記録が削除されていれば reason: deleted の取消を作り、作業の記録が削除されていれば作業を取り下げる（tasks.status = withdrawn、受理レコードへの取消を作る） |
 
 ### D-8: Bot リポジトリへの書き込み (FR-4, FR-8, FR-9, FR-10)

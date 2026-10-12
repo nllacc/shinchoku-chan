@@ -251,9 +251,11 @@ CREATE TABLE schedule_jobs (
 CREATE INDEX jobs_due ON schedule_jobs (state, run_at);
 CREATE TABLE evaluations (
   task_id TEXT PRIMARY KEY, score_hundredths INTEGER NOT NULL, final_rate_permille INTEGER NOT NULL,
-  missing_count INTEGER NOT NULL, algorithm TEXT NOT NULL, evaluation_uri TEXT, finalized_at INTEGER NOT NULL
+  missing_count INTEGER NOT NULL, algorithm TEXT NOT NULL, evaluation_uri TEXT, finalized_at INTEGER NOT NULL,
+  stale INTEGER NOT NULL DEFAULT 0
 );
-CREATE INDEX evaluations_score ON evaluations (score_hundredths DESC);
+CREATE INDEX evaluations_score ON evaluations (score_hundredths DESC, finalized_at DESC, task_id DESC);
+CREATE INDEX evaluations_rate ON evaluations (final_rate_permille DESC, finalized_at DESC, task_id DESC);
 ```
 
 ### D-8: 利用資格 (FR-8, FR-9)
