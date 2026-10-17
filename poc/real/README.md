@@ -6,7 +6,6 @@ bsky.social 上の実アカウント 2 つ（ユーザーと Bot）で、起点�
 
 ## 2. 反映先
 
-- platform
 - receipt
 
 ## 3. 制約値
