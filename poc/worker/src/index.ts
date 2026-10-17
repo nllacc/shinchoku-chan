@@ -6,6 +6,9 @@ import * as Lex from "@atproto/lexicon"
 
 interface Env { DB: D1Database }
 
+const NS = "com.example.shinchoku"
+const OAUTH_SCOPE = `atproto repo:${NS}.task?action=create repo:${NS}.progress?action=create repo:${NS}.result?action=create repo:app.bsky.feed.post?action=create blob:image/*`
+
 // OAuth 検証ページが送ってきた結果（PoC のためメモリに保持する）
 let lastReport: unknown = null
 
@@ -36,6 +39,21 @@ export default {
       const cid = await cidOf(r.value)
       const t3 = Date.now()
       return Response.json({ pds, serverCid: r.cid, localCid: cid, match: cid === r.cid, ms: { resolve: t1 - t0, getRecord: t2 - t1, cid: t3 - t2 } })
+    }
+    if (u.pathname === "/client-metadata.json") {
+      // 公開オリジン用の OAuth クライアント情報（web/app.js の SCOPE と同じ値）
+      return Response.json({
+        client_id: `${u.origin}/client-metadata.json`,
+        client_name: "shinchoku-chan PoC",
+        client_uri: u.origin,
+        redirect_uris: [`${u.origin}/`],
+        scope: OAUTH_SCOPE,
+        response_types: ["code"],
+        grant_types: ["authorization_code", "refresh_token"],
+        token_endpoint_auth_method: "none",
+        application_type: "web",
+        dpop_bound_access_tokens: true,
+      })
     }
     if (u.pathname === "/report") {
       if (req.method === "POST") lastReport = await req.json()

@@ -13756,7 +13756,7 @@ function fixLocation(clientMetadata) {
 
 // web/app.js
 var NS = "com.example.shinchoku";
-var SCOPE = `atproto repo:${NS}.task?action=create repo:${NS}.progress?action=create repo:app.bsky.feed.post?action=create blob:image/*`;
+var SCOPE = `atproto repo:${NS}.task?action=create repo:${NS}.progress?action=create repo:${NS}.result?action=create repo:app.bsky.feed.post?action=create blob:image/*`;
 var $ = (id) => document.getElementById(id);
 var out = $("out");
 var log = (s) => {
@@ -13777,7 +13777,8 @@ var session;
 var ready = (async () => {
   client = new BrowserOAuthClient({
     handleResolver: "https://bsky.social",
-    clientMetadata: {
+    // 公開 HTTPS のオリジンでは、Worker が返す client-metadata.json を client_id にする
+    clientMetadata: location.protocol === "https:" ? await (await fetch("/client-metadata.json")).json() : {
       client_id: buildLoopbackClientId(location) + "&scope=" + encodeURIComponent(SCOPE),
       redirect_uris: [`http://127.0.0.1:${location.port}/`],
       scope: SCOPE,
@@ -13802,6 +13803,7 @@ if (!session) {
   $("state").textContent = "\u672A\u30B5\u30A4\u30F3\u30A4\u30F3";
 } else {
   $("state").textContent = `\u30B5\u30A4\u30F3\u30A4\u30F3\u6E08\u307F: ${session.did}`;
+  session.getTokenInfo().then((i) => log(`\u30BB\u30C3\u30B7\u30E7\u30F3\u5FA9\u5143: \u30C8\u30FC\u30AF\u30F3\u671F\u9650 ${i.expiresAt} / \u73FE\u5728 ${(/* @__PURE__ */ new Date()).toISOString()}`)).catch((e) => log("\u30C8\u30FC\u30AF\u30F3\u60C5\u5831\u306E\u53D6\u5F97\u306B\u5931\u6557: " + e.message));
   $("run").disabled = false;
   $("run").onclick = run;
 }
@@ -13836,6 +13838,7 @@ async function run() {
   try {
     const info = await session.getTokenInfo();
     rec("\u4ED8\u4E0E\u3055\u308C\u305F\u6A29\u9650", true, info.scope);
+    rec("\u30A2\u30AF\u30BB\u30B9\u30C8\u30FC\u30AF\u30F3\u306E\u671F\u9650", true, `${info.expiresAt} / aud=${info.aud}`);
     const task = await create(`${NS}.task`, { summary: "OAuth\u691C\u8A3C" });
     rec("\u8981\u6C42\u3057\u305F task \u3092\u4F5C\u6210\u3067\u304D\u308B", task.status === 200, task.text);
     if (task.json?.uri) created.push(task.json.uri);
@@ -13845,6 +13848,9 @@ async function run() {
     const post = await create("app.bsky.feed.post", { text: "[shinchoku-chan OAuth\u691C\u8A3C] \u81EA\u52D5\u3067\u524A\u9664\u3055\u308C\u307E\u3059" });
     rec("\u8981\u6C42\u3057\u305F feed.post \u3092\u4F5C\u6210\u3067\u304D\u308B", post.status === 200, post.text);
     if (post.json?.uri) created.push(post.json.uri);
+    const res = await create(`${NS}.result`, { task: { uri: task.json?.uri, cid: task.json?.cid }, finalValue: 1e3, description: "OAuth\u691C\u8A3C" });
+    rec("\u8981\u6C42\u3057\u305F result \u3092\u4F5C\u6210\u3067\u304D\u308B", res.status === 200, res.text);
+    if (res.json?.uri) created.push(res.json.uri);
     const bot = await create(`${NS}.bot.receipt`, { x: 1 });
     rec("\u8981\u6C42\u3057\u3066\u3044\u306A\u3044 bot.receipt \u306F\u62D2\u5426\u3055\u308C\u308B", bot.status >= 400, `${bot.status} ${bot.text}`);
     if (bot.status === 200 && bot.json?.uri) created.push(bot.json.uri);
@@ -13853,6 +13859,22 @@ async function run() {
     const png = Uint8Array.from(atob("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGP4z8DwHwAFAAH/iZk9HQAAAABJRU5ErkJggg=="), (c) => c.charCodeAt(0));
     const blob = await call("com.atproto.repo.uploadBlob", png, "image/png");
     rec("\u753B\u50CF\u306E blob \u3092\u30A2\u30C3\u30D7\u30ED\u30FC\u30C9\u3067\u304D\u308B", blob.status === 200, blob.text);
+    if (blob.json?.blob) {
+      const t2 = await create(`${NS}.task`, { summary: "\u753B\u50CF\u4ED8\u304D\u306E\u691C\u8A3C", startImage: blob.json.blob });
+      if (t2.json?.uri) created.push(t2.json.uri);
+      const doc = await (await fetch(`https://plc.directory/${session.did}`)).json();
+      const pds = doc.service.find((x) => x.id === "#atproto_pds").serviceEndpoint;
+      const url = `${pds}/xrpc/com.atproto.sync.getBlob?did=${session.did}&cid=${blob.json.blob.ref.$link}`;
+      const shown = await new Promise((ok) => {
+        const im = new Image();
+        im.onload = () => ok(`\u8868\u793A\u3067\u304D\u305F ${im.naturalWidth}x${im.naturalHeight}`);
+        im.onerror = () => ok("\u8868\u793A\u3067\u304D\u306A\u3044");
+        im.src = url;
+      });
+      rec("PDS \u306E blob \u306E\u516C\u958B URL \u3092 img \u3067\u8868\u793A\u3067\u304D\u308B", shown.startsWith("\u8868\u793A\u3067\u304D\u305F"), shown);
+      const cors = await fetch(url).then((r) => `${r.status} ${r.headers.get("content-type")}`).catch((e) => "CORS\u5931\u6557 " + e.message);
+      rec("PDS \u306E blob \u3092 fetch\uFF08CORS\uFF09\u3067\u53D6\u5F97\u3067\u304D\u308B", /^200 image\/png/.test(cors), cors);
+    }
     const txt = await call("com.atproto.repo.uploadBlob", new Uint8Array([104, 105]), "text/plain");
     rec("\u753B\u50CF\u4EE5\u5916\u306E blob \u306F\u62D2\u5426\u3055\u308C\u308B", txt.status >= 400, `${txt.status} ${txt.text}`);
     if (prog.json?.uri) {
