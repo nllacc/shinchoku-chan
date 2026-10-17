@@ -1,0 +1,31 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>OAuth 検証 PoC</title>
+<body style="font-family:sans-serif;max-width:48rem;margin:2rem auto;padding:0 1rem">
+<h1>OAuth 検証 PoC</h1>
+<p id="state">読み込み中…</p>
+<form id="login">
+  <input id="handle" placeholder="handle（例: nlla.bsky.social）" size="32" autocomplete="username">
+  <button>サインイン</button>
+</form>
+<p><button id="run" disabled>検証を実行</button></p>
+<pre id="out" style="white-space:pre-wrap;background:#eee;padding:1rem"></pre>
+<script>
+  // 安全なコンテキスト（127.0.0.1 など）でなければ OAuth の暗号処理が使えないため、読み込む前に案内する
+  if (!window.isSecureContext) {
+    var port = location.port || "8787"
+    document.getElementById("state").textContent = "このアドレスでは OAuth を実行できません"
+    document.getElementById("login").hidden = true
+    document.getElementById("out").textContent =
+      "http://" + location.hostname + ":" + port + "/ は安全なコンテキストではないため、ブラウザの暗号処理が使えません。\n" +
+      "また Bluesky のループバックの OAuth は、リダイレクト先が 127.0.0.1 に固定されます。\n\n" +
+      "ブラウザを動かしている端末から、次のポート転送を行って http://127.0.0.1:" + port + "/ を開いてください。\n" +
+      "  ssh -L " + port + ":127.0.0.1:" + port + " ubuntu@" + location.hostname
+  } else {
+    var s = document.createElement("script")
+    s.type = "module"; s.src = "/app.js"
+    s.onerror = function () { document.getElementById("out").textContent = "app.js の読み込みに失敗しました" }
+    document.body.appendChild(s)
+  }
+</script>

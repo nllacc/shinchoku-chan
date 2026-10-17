@@ -1,1 +1,21 @@
-{"name":"poc-verify","private":true,"type":"module","dependencies":{"@atproto/lex-json":"*","@atproto/lexicon":"*","@ipld/dag-cbor":"*","multiformats":"*"},"devDependencies":{"wrangler":"*"}}
+{
+  "name": "poc-verify",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@atproto/lex-json": "*",
+    "@atproto/lexicon": "*",
+    "@atproto/oauth-client-browser": "^0.5.10",
+    "@ipld/dag-cbor": "*",
+    "multiformats": "*"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.2",
+    "wrangler": "*"
+  },
+  "scripts": {
+    "build:web": "esbuild web/app.js --bundle --format=esm --outfile=public/app.js",
+    "predev": "node scripts/free-port.mjs 8787 && npm run build:web",
+    "dev": "wrangler dev --ip 0.0.0.0 --port 8787"
+  }
+}

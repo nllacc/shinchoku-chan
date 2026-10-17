@@ -3,6 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "dev": "npm run dev --prefix poc/worker",
     "setup:spec": "npm ci --ignore-scripts --prefix .claude/skills/spec-driven-development/scripts",
     "lint:spec": "prettier --check specs docs \"poc/**/README.md\" && node .claude/skills/spec-driven-development/scripts/check-all.mjs",
     "test:spec": "node .claude/skills/spec-driven-development/scripts/selftest.mjs"

@@ -6,6 +6,9 @@ import * as Lex from "@atproto/lexicon"
 
 interface Env { DB: D1Database }
 
+// OAuth 検証ページが送ってきた結果（PoC のためメモリに保持する）
+let lastReport: unknown = null
+
 async function resolvePds(did: string): Promise<string> {
   const url = did.startsWith("did:web:")
     ? `https://${did.slice(8)}/.well-known/did.json`
@@ -33,6 +36,10 @@ export default {
       const cid = await cidOf(r.value)
       const t3 = Date.now()
       return Response.json({ pds, serverCid: r.cid, localCid: cid, match: cid === r.cid, ms: { resolve: t1 - t0, getRecord: t2 - t1, cid: t3 - t2 } })
+    }
+    if (u.pathname === "/report") {
+      if (req.method === "POST") lastReport = await req.json()
+      return Response.json(lastReport)
     }
     if (u.pathname === "/cpu") {
       // 取得済みレコードに対するCPU負荷のみを測る（ネットワークなし）

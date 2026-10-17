@@ -10,3 +10,6 @@ crons = ["*/5 * * * *"]
 binding = "DB"
 database_name = "poc"
 database_id = "local"
+
+[assets]
+directory = "./public"
