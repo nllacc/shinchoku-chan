@@ -5,6 +5,11 @@
  * - 雛形を1か所ずつ崩したとき、対応するルールが検出されること
  * - 同じ入力に対して出力が一致すること（冪等性）
  * - references/rules.md がスクリプトのルール定義と一致すること
+ *
+ * Mermaid の構文検証（G014）は1回あたり約1秒かかるため、通過の確認（runFull）と G014 のケース
+ * だけで使い、ほかのケースは --no-syntax で省く。G014 には scripts/ への依存の導入が必要で、
+ * 未導入の環境では G014 に関わるケースだけが導入手順を示して失敗する。
+ *   npm ci --ignore-scripts --prefix <scripts のパス>
  */
 import { after, test } from "node:test"
 import assert from "node:assert/strict"
@@ -13,10 +18,14 @@ import os from "node:os"
 import path from "node:path"
 import { spawnSync } from "node:child_process"
 import { fileURLToPath } from "node:url"
+import { setupProblem } from "./mermaid-syntax.mjs"
 
 const here = path.dirname(fileURLToPath(import.meta.url))
 const skill = path.dirname(here)
 const templates = path.join(skill, "templates")
+
+// 依存が未導入なら案内文（導入済みなら null）
+const depsProblem = setupProblem()
 
 const roots = []
 after(() => roots.forEach(r => fs.rmSync(r, { recursive: true, force: true })))
@@ -42,10 +51,25 @@ function makeRoot(edits = {}, specNames = ["sample"]) {
   return root
 }
 
+const checkAll = path.join(here, "check-all.mjs")
+
+/** 構文検証を省いて実行する */
 function run(root, ...args) {
+  return runWith(checkAll, root, ["--no-syntax", ...args])
+}
+
+/** 構文検証つきで実行する（依存が未導入なら省く） */
+function runFull(root, ...args) {
+  return runWith(checkAll, root, [
+    ...(depsProblem ? ["--no-syntax"] : []),
+    ...args,
+  ])
+}
+
+function runWith(script, root, args) {
   const r = spawnSync(
     process.execPath,
-    [path.join(here, "check-all.mjs"), "--root", "specs", "--json", ...args],
+    [script, "--root", "specs", "--json", ...args],
     {
       cwd: root,
       encoding: "utf8",
@@ -53,7 +77,7 @@ function run(root, ...args) {
   )
   return {
     code: r.status,
-    findings: r.status === 2 ? [] : JSON.parse(r.stdout),
+    findings: r.stdout.trim() === "" ? [] : JSON.parse(r.stdout),
     stderr: r.stderr,
   }
 }
@@ -61,7 +85,7 @@ function run(root, ...args) {
 const rulesOf = findings => [...new Set(findings.map(f => f.rule))].sort()
 
 test("雛形はすべてのチェックを通過する", () => {
-  const r = run(makeRoot())
+  const r = runFull(makeRoot())
   assert.deepEqual(r.findings, [])
   assert.equal(r.code, 0)
 })
@@ -104,7 +128,7 @@ const completed = {
 }
 
 test("全タスク完了済みで実装・テストが揃った spec は通過する", () => {
-  const r = run(makeRoot(completed))
+  const r = runFull(makeRoot(completed))
   assert.deepEqual(r.findings, [])
 })
 
@@ -710,6 +734,16 @@ const cases = [
     "G013",
   ],
   [
+    "Mermaid が構文エラーとする記述（予約語 end を ID にする）",
+    {
+      "sample/design.md": rep(
+        "  Header --> NotificationBadge\n",
+        "  Header --> NotificationBadge\n  Header --> end\n",
+      ),
+    },
+    "G014",
+  ],
+  [
     "図の中の進捗語",
     { "sample/design.md": rep("マウント", "今後マウント") },
     "W001",
@@ -718,7 +752,8 @@ const cases = [
 
 for (const [name, edits, rule, specNames] of cases) {
   test(`${rule}: ${name}`, () => {
-    const r = run(makeRoot(edits, specNames))
+    if (rule === "G014") assert.equal(depsProblem, null, depsProblem)
+    const r = (rule === "G014" ? runFull : run)(makeRoot(edits, specNames))
     assert.equal(r.code, 1, r.stderr)
     assert.ok(
       rulesOf(r.findings).includes(rule),
@@ -728,7 +763,7 @@ for (const [name, edits, rule, specNames] of cases) {
 }
 
 test("状態図を追加しても通過する", () => {
-  const r = run(makeRoot({ "sample/design.md": withState(t => t) }))
+  const r = runFull(makeRoot({ "sample/design.md": withState(t => t) }))
   assert.deepEqual(r.findings, [])
 })
 
@@ -761,6 +796,93 @@ test("図の行は W008（重複行）の対象外", () => {
   const dup = "  useUnreadCount->>unreadCount: fetchUnreadCount\n"
   const r = run(makeRoot({ "sample/design.md": rep(dup, dup + dup) }))
   assert.ok(!rulesOf(r.findings).includes("W008"), JSON.stringify(r.findings))
+})
+
+test("G014: コメント行を挟んでも構文エラーの行番号が合う", () => {
+  assert.equal(depsProblem, null, depsProblem)
+  const edit = rep(
+    "  Header --> NotificationBadge\n",
+    "  %% 補足1\n  %% 補足2\n  Header --> NotificationBadge\n  Header --> end\n",
+  )
+  const r = runFull(makeRoot({ "sample/design.md": edit }))
+  const text = edit(fs.readFileSync(path.join(templates, "design.md"), "utf8"))
+  const line = text.split("\n").indexOf("  Header --> end") + 1
+  const g014 = r.findings.filter(f => f.rule === "G014")
+  assert.deepEqual(
+    g014.map(f => f.line),
+    [line],
+  )
+})
+
+test("G014: G005 の指摘がある図は構文検証の対象にしない", () => {
+  assert.equal(depsProblem, null, depsProblem)
+  const r = runFull(
+    makeRoot({
+      "sample/design.md": rep(
+        "  Header --> NotificationBadge\n",
+        "  Header ==> NotificationBadge\n",
+      ),
+    }),
+  )
+  assert.ok(rulesOf(r.findings).includes("G005"))
+  assert.ok(!rulesOf(r.findings).includes("G014"), JSON.stringify(r.findings))
+})
+
+/** 依存を導入していない scripts のコピーを作る（nm: node_modules に置くパッケージの版） */
+function scriptsWithoutDeps(nm = {}) {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "spec-scripts-"))
+  roots.push(dir)
+  fs.cpSync(here, dir, {
+    recursive: true,
+    filter: src => !src.includes("node_modules"),
+  })
+  for (const [name, version] of Object.entries(nm)) {
+    const d = path.join(dir, "node_modules", name)
+    fs.mkdirSync(d, { recursive: true })
+    fs.writeFileSync(path.join(d, "package.json"), JSON.stringify({ version }))
+  }
+  return path.join(dir, "check-all.mjs")
+}
+
+test("依存が未導入なら導入手順を示して終了コード 1 で止まる", () => {
+  const r = runWith(scriptsWithoutDeps(), makeRoot(), [])
+  assert.equal(r.code, 1)
+  assert.match(r.stderr, /mermaid が未導入/)
+  assert.match(r.stderr, /npm ci --ignore-scripts --prefix /)
+})
+
+test("依存の版が package.json と違えば止まる", () => {
+  const r = runWith(
+    scriptsWithoutDeps({ mermaid: "0.0.1", jsdom: "0.0.1" }),
+    makeRoot(),
+    [],
+  )
+  assert.equal(r.code, 1)
+  assert.match(r.stderr, /mermaid が 0\.0\.1（必要: /)
+})
+
+test("図がない spec は依存が未導入でも検査できる", () => {
+  const root = makeRoot({
+    "sample/design.md": t =>
+      chapter(() => "- なし\n")(
+        t.replace(/\| `src\/components\/layout\/Header.tsx`.*\n/, ""),
+      ),
+  })
+  const r = runWith(scriptsWithoutDeps(), root, [])
+  assert.equal(r.code, 0, r.stderr)
+  assert.deepEqual(r.findings, [])
+})
+
+test("--no-syntax は構文検証だけを省く", () => {
+  const root = makeRoot({
+    "sample/design.md": rep(
+      "  Header --> NotificationBadge\n",
+      "  Header --> NotificationBadge\n  Header --> end\n",
+    ),
+  })
+  const r = runWith(path.join(here, "check-all.mjs"), root, ["--no-syntax"])
+  assert.ok(!rulesOf(r.findings).includes("G014"))
+  assert.ok(rulesOf(r.findings).includes("G007"))
 })
 
 test("ルール定義の全 ID がテストケースで網羅されている", async () => {

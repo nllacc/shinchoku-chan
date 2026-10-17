@@ -2,12 +2,14 @@
  * 図チェック: design.md の「2. 関係図・ワークフロー」を検証する。
  *
  * - 構成表が 4 行以上の spec は、関係図とワークフロー図（mermaid）を必須とする
- * - 図の記法を部分集合に絞って解析し、形だけの図・冗長な図を機械的に弾く
+ * - 図の記法を部分集合に絞った自前のパーサで解析し、形だけの図・冗長な図を機械的に弾く
  * - 図と構成表・設計項目の対応（C1〜C5）で、図の更新漏れを検出する
+ * - 構文の正しさだけは mermaid.parse に任せる（G014。依存は mermaid-syntax.mjs を参照）
  *
- * Mermaid のパーサは使わない（外部依存なし）。許可する記法は rules の G005 を参照する。
+ * 許可する記法は rules の G005 を参照する。
  */
 import { pathToFileURL } from "node:url"
+import { syntaxError } from "./mermaid-syntax.mjs"
 import {
   codeBlocks,
   finding,
@@ -52,6 +54,7 @@ export const rules = {
   G011: "C5: ワークフロー図の少なくとも1つに分岐がある（alt／opt／break、または2本以上の遷移が出る状態）",
   G012: `状態図の状態 ID は ASCII の PascalCase、状態名（\`state "名" as ID\` の名、なければ ID）は ${LIMIT.stateName} 文字以内で空白・句読点を含めない。遷移ラベルは ${LIMIT.transition} 文字以内で「。」を含めない`,
   G013: `状態図は開始遷移（[*] --> S）をちょうど1本持ち、全状態が開始から到達可能で、すべての状態が出る遷移を持つ（終了は --> [*] で明示する）。同一遷移の重複と、状態数×${LIMIT.transitionsPerState} 本を超える遷移を置かない`,
+  G014: "図の構文が Mermaid（mermaid.parse）で解釈できる。G004／G005 の指摘がある図は、それを直してから検査する。依存は scripts/ に導入する（npm ci --ignore-scripts --prefix <scripts のパス>）",
 }
 
 const KINDS = {
@@ -501,7 +504,7 @@ function hasBranch(d) {
   return [...outCount.values()].some(c => c >= 2)
 }
 
-function checkDesign(f, add) {
+async function checkDesign(f, add, syntax) {
   const secs = sectionsByH2(f.lines)
   const chapter = secs.find(s => s.title === CHAPTER)
   const comp = secs.find(s => s.title === COMPONENT)
@@ -536,6 +539,10 @@ function checkDesign(f, add) {
       add(e.no, e.msg.startsWith("図種") ? "G004" : "G005", e.msg)
     if (d.kind) {
       checkCaption(it.caption, d, add)
+      if (syntax && d.errors.length === 0) {
+        const e = await syntax(it.block)
+        if (e) add(e.no, "G014", e.message)
+      }
       checkScale(d, add)
       if (d.kind === "stateDiagram-v2") checkState(d, add)
       if (d.group === "relation" || d.kind === "sequenceDiagram")
@@ -594,17 +601,25 @@ function checkDesign(f, add) {
     )
 }
 
-export function check(ctx) {
+export async function check(ctx) {
   const out = []
+  const syntax =
+    ctx.options?.syntax === false
+      ? null
+      : block => syntaxError(block.lines, block.open.no)
   for (const spec of ctx.specs) {
     if (!ctx.targets.has(spec.name)) continue
     const d = spec.files.design
     if (!d) continue
-    checkDesign(d, (no, rule, msg) => out.push(finding(d.rel, no, rule, msg)))
+    await checkDesign(
+      d,
+      (no, rule, msg) => out.push(finding(d.rel, no, rule, msg)),
+      syntax,
+    )
   }
   return out
 }
 
 if (import.meta.url === pathToFileURL(process.argv[1]).href) {
-  process.exitCode = runCli([{ title, rules, check }])
+  process.exitCode = await runCli([{ title, rules, check }])
 }

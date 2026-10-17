@@ -29,6 +29,10 @@ description: 機能の新規追加・修正に着手する前に、specs/<compon
     ├── check-format.mjs     # F系: 雛形どおりの体裁・ID・トレーサビリティ・サイズ上限
     ├── check-diagram.mjs    # G系: 関係図・ワークフロー図（mermaid）の構造と、構成表・設計項目との対応
     ├── check-wording.mjs    # W系: 規定にそぐわない語・表現
+    ├── mermaid-syntax.mjs   # 図の構文検証（G014）。依存の導入状態の確認と mermaid.parse の呼び出し
+    ├── package.json         # 依存（mermaid・jsdom）の完全固定。git 管理する
+    ├── package-lock.json    # 同上のロックファイル。git 管理する
+    ├── node_modules/        # 依存の導入先（git 管理しない。scripts/.gitignore で除外）
     └── selftest.mjs         # スクリプト自身のテスト（npm run test:spec）
 ```
 
@@ -39,7 +43,16 @@ description: 機能の新規追加・修正に着手する前に、specs/<compon
 3. `npm run lint:spec -- <component>` を実行し、指摘が0件になるまで本文を修正する。指摘の意味は `references/rules.md` を参照する。合格後に「図の目視確認」（後述）を1回実施する。
 4. 判断が必要な事項（要件・設計の未確定点）は、作成中に意思決定者（人間）へ確認し、結論を本文に反映してから完了とする。未確定のまま残す書き方はスクリプトが弾く（W001）。
 
-`lint:spec` は `prettier --check specs` による整形確認の後にチェックスクリプトを実行する。整形の指摘は `npx prettier --write specs` で解消する。チェックスクリプト自体は外部依存を持たず、同じ入力に対して常に同じ出力を返す。`--json` で機械可読な出力、`--root <dir>` で specs ルートの変更ができる。終了コードは 0=指摘なし／1=指摘あり／2=引数エラー。
+`lint:spec` は `prettier --check specs` による整形確認の後にチェックスクリプトを実行する。整形の指摘は `npx prettier --write specs` で解消する。同じ入力に対して常に同じ出力を返す。`--json` で機械可読な出力、`--root <dir>` で specs ルートの変更ができる。終了コードは 0=指摘なし／1=指摘あり・依存の未導入／2=引数エラー。
+
+### 依存の導入
+
+図の構文検証（G014）だけが外部パッケージ（mermaid・jsdom）を使う。依存は `scripts/` に閉じ込めてあり、プロジェクトのルートの `package.json`・`node_modules` には触れない。Node 22.12 以上が必要。
+
+- 導入: プロジェクトのルートで `npm ci --ignore-scripts --prefix .claude/skills/spec-driven-development/scripts` を実行する（CI でも `lint:spec` の前に同じコマンドを置く）。
+- 未導入・版違いのとき: `lint:spec` は導入コマンドを表示して終了コード 1 で止まる。検証を黙って省かない。ただし図のない spec（構成表3行以下で「- なし」）だけを検査するときは依存を読み込まない。
+- `package.json` の版は完全固定する（`^` `~` を付けない）。版を変えるときは `npm install --ignore-scripts --prefix <scripts のパス>` で lockfile を更新し、`npm run test:spec` を通す。
+- `--no-syntax` は G014 を省く。selftest 専用で、`lint:spec` や CI では使わない。
 
 ## ディレクトリ規則（S系）
 
@@ -135,4 +148,4 @@ UI に関わる Phase（`.tsx`／`.astro`／`.css`／コンポーネント／画
 1. `scripts/check-*.mjs` の `rules` 定義と判定処理を変更する。
 2. `scripts/selftest.mjs` に、そのルールが発火するケースを追加する（全ルール ID のケース網羅はテストで強制される）。
 3. `node scripts/check-all.mjs --rules > references/rules.md` で一覧を再生成する。
-4. 雛形を変えた場合も含め、`npm run test:spec` が成功することを確認する。
+4. 雛形を変えた場合も含め、依存を導入した状態で `npm run test:spec` が成功することを確認する。

@@ -5,12 +5,18 @@
  * - specs ルート配下の各 spec ディレクトリを読み込む。
  * - 指摘（finding）を決定的な順序で整列・出力する CLI を提供する。
  *
- * 外部依存を持たず、同じ入力に対して常に同じ出力を返す（冪等）。
+ * この共通処理自体は外部依存を持たない。Mermaid の構文検証だけが scripts/package.json の
+ * 依存を使う（mermaid-syntax.mjs）。同じ入力に対して常に同じ出力を返す（冪等）。
  */
 import fs from "node:fs"
 import path from "node:path"
 
 export const SPEC_FILES = ["requirements.md", "design.md", "tasks.md"]
+
+/** 検査に必要な依存が導入されていないことを表す。CLI は案内を表示して終了コード 1 で止まる */
+export class SetupError extends Error {
+  name = "SetupError"
+}
 
 /** 行配列へ分解する。フェンス行自身もコード扱いにし、コードブロックの言語（なければ ""）を lang に付与する */
 export function parseLines(text) {
@@ -187,17 +193,20 @@ export function rulesMarkdown(modules) {
 
 /**
  * CLI 本体。
- * 使い方: <script> [--root specs] [--json] [--rules] [spec名...]
- * 終了コード: 0=指摘なし / 1=指摘あり / 2=引数エラー
+ * 使い方: <script> [--root specs] [--json] [--rules] [--no-syntax] [spec名...]
+ * --no-syntax は Mermaid の構文検証（G014）を省く。selftest 専用で、lint:spec や CI では使わない。
+ * 終了コード: 0=指摘なし / 1=指摘あり・依存の未導入 / 2=引数エラー
  */
-export function runCli(modules, argv = process.argv.slice(2)) {
+export async function runCli(modules, argv = process.argv.slice(2)) {
   let rootArg = "specs"
   let json = false
+  let syntax = true
   const names = []
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i]
     if (a === "--root") rootArg = argv[++i]
     else if (a === "--json") json = true
+    else if (a === "--no-syntax") syntax = false
     else if (a === "--rules") {
       process.stdout.write(rulesMarkdown(modules))
       return 0
@@ -216,8 +225,25 @@ export function runCli(modules, argv = process.argv.slice(2)) {
   }
   const specs = all.map(n => loadSpec(root, n))
   const targets = new Set(names.length > 0 ? names : all)
-  const ctx = { root, repoRoot: path.dirname(root), specs, targets }
-  const findings = sortFindings(modules.flatMap(m => m.check(ctx)))
+  const ctx = {
+    root,
+    repoRoot: path.dirname(root),
+    specs,
+    targets,
+    options: { syntax },
+  }
+  let findings
+  try {
+    const results = []
+    for (const m of modules) results.push(await m.check(ctx))
+    findings = sortFindings(results.flat())
+  } catch (e) {
+    if (!(e instanceof SetupError)) throw e
+    process.stderr.write(e.message + "\n")
+    return 1
+  }
+  if (!syntax)
+    process.stderr.write("Mermaid の構文検証（G014）を省いた（--no-syntax）\n")
   if (json) {
     process.stdout.write(JSON.stringify(findings, null, 2) + "\n")
   } else {

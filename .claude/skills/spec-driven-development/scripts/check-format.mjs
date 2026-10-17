@@ -516,5 +516,5 @@ export function check(ctx) {
 }
 
 if (import.meta.url === pathToFileURL(process.argv[1]).href) {
-  process.exitCode = runCli([{ title, rules, check }])
+  process.exitCode = await runCli([{ title, rules, check }])
 }
