@@ -372,6 +372,28 @@ export const docCases = [
     ARCH_SPECS,
   ],
   [
+    "信頼と検証の根拠の spec が存在しない",
+    a(
+      sub(
+        /(配信ワーカーが API キーの一致を確認する +\| )delivery-worker/,
+        "$1ghost-spec",
+      ),
+    ),
+    "S013",
+    ARCH_SPECS,
+  ],
+  [
+    "信頼と検証の根拠が spec 名でも poc/<テーマ> でもない",
+    a(
+      sub(
+        /(配信ワーカーが API キーの一致を確認する +\| )delivery-worker/,
+        "$1配信ワーカー",
+      ),
+    ),
+    "F-A12",
+    ARCH_SPECS,
+  ],
+  [
     "architecture の図が Mermaid の構文エラー",
     a(rep('  api --> worker["配信ワーカー"]\n', "  api --> end\n")),
     "G014",
@@ -603,6 +625,33 @@ test("--retarget-poc は根拠の poc/<テーマ> を反映先 spec へ付け替
   assert.match(after, /\| データ保管 .*\| delivery-worker/)
   // 付け替え後に再実行しても対象がない
   assert.match(cli().stdout, /付け替え対象なし/)
+})
+
+test("--retarget-poc は信頼と検証の根拠も付け替える", () => {
+  const root = makeRoot(
+    a(
+      sub(
+        /(配信ワーカーが API キーの一致を確認する +\| )delivery-worker/,
+        "$1poc/storage-cost",
+      ),
+    ),
+    ARCH_SPECS,
+  )
+  const r = spawnSync(
+    process.execPath,
+    [checkAll, "--root", "specs", "--retarget-poc", "storage-cost", "--write"],
+    { cwd: root, encoding: "utf8" },
+  )
+  assert.equal(r.status, 0, r.stderr)
+  const after = fs.readFileSync(
+    path.join(root, "docs", "architecture.md"),
+    "utf8",
+  )
+  assert.match(
+    after,
+    /配信ワーカーが API キーの一致を確認する +\| delivery-worker/,
+  )
+  assert.ok(!after.includes("poc/storage-cost"))
 })
 
 test("--retarget-poc は反映先が決まらない PoC を拒否する", () => {
