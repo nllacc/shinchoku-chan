@@ -55,6 +55,24 @@ export default {
         dpop_bound_access_tokens: true,
       })
     }
+    if (u.pathname === "/subreq") {
+      // 外部通信（subrequest）を n 回まで呼べるか測る
+      const n = Number(u.searchParams.get("n") ?? 60)
+      let ok = 0, error = ""
+      for (let i = 0; i < n; i++) {
+        try { const r = await fetch("https://bsky.social/xrpc/com.atproto.server.describeServer"); await r.arrayBuffer(); ok++ } catch (e) { error = String(e); break }
+      }
+      return Response.json({ n, ok, error })
+    }
+    if (u.pathname === "/d1loop") {
+      // D1 のクエリを n 回まで呼べるか測る
+      const n = Number(u.searchParams.get("n") ?? 60)
+      let ok = 0, error = ""
+      for (let i = 0; i < n; i++) {
+        try { await env.DB.prepare("SELECT 1").first(); ok++ } catch (e) { error = String(e); break }
+      }
+      return Response.json({ n, ok, error })
+    }
     if (u.pathname === "/report") {
       if (req.method === "POST") lastReport = await req.json()
       return Response.json(lastReport)
