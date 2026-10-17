@@ -173,20 +173,20 @@ export async function submitReport(
 ): Promise<SubmitResult>
 ```
 
-| 手順 | 内容                                                                                  | 失敗時               |
-| ---- | ------------------------------------------------------------------------------------- | -------------------- |
-| 1    | recordUri の collection が progress または result                                     | 422 bad-uri          |
-| 2    | 記録の参照する確認依頼を D1 から引く。確認依頼がなければ拒否                          | 422 mismatch         |
-| 3    | 確認依頼が accepted なら、保存済みの結果を返す                                        | 409 duplicate        |
-| 4    | now が確認依頼の expires_at を超えていないこと（Bot の受信時刻で判定）                | 410 expired          |
-| 5    | PDS から取得し CID を照合、構造と意味規則を検証する                                   | 422 invalid-record   |
-| 6    | リポジトリの DID が確認依頼の did と一致、記録の task.uri と checkin の参照が一致     | 422 mismatch         |
-| 7    | collection と確認依頼の kind が一致                                                   | 422 mismatch         |
-| 8    | 作業の evidence_required が 1 なら、evidence の blob が存在（getBlob の HEAD で確認） | 422 evidence-missing |
-| 9    | Bot のリポジトリへ受領証（accepted）を作る。record・value・receivedAt を固定する      | 502 bot-write-failed |
-| 10   | reports に行を追加し、checkins の status を accepted にする                           | —                    |
+| 手順 | 内容                                                                                                                                       | 失敗時                              |
+| ---- | ------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------- |
+| 1    | recordUri の collection が progress または result                                                                                          | 422 bad-uri                         |
+| 2    | 記録の参照する確認依頼を D1 から引く。確認依頼がなければ拒否                                                                               | 422 mismatch                        |
+| 3    | 確認依頼が accepted なら、保存済みの結果を返す                                                                                             | 409 duplicate                       |
+| 4    | now が確認依頼の expires_at を超えていないこと（Bot の受信時刻で判定）                                                                     | 410 expired                         |
+| 5    | PDS から取得し CID を照合、構造と意味規則を検証する                                                                                        | 422 invalid-record                  |
+| 6    | リポジトリの DID が確認依頼の did と一致、記録の task.uri と checkin の参照が一致                                                          | 422 mismatch                        |
+| 7    | collection と確認依頼の kind が一致                                                                                                        | 422 mismatch                        |
+| 8    | 作業の evidence_required が 1 なら、evidence の blob が存在（getBlob の HEAD で確認）                                                      | 422 evidence-missing                |
+| 9    | Bot のリポジトリへ受領証（accepted）を、確認依頼と同じ rkey で putRecord（swapRecord を null）で作る。record・value・receivedAt を固定する | 409 duplicate、502 bot-write-failed |
+| 10   | reports に行を追加し、checkins の status を accepted にする                                                                                | —                                   |
 
-外部への通信は、DID 文書 1 回、記録の取得 1 回、blob の確認 1 回、Bot の書き込み 1 回、確認依頼の記録の確認 1 回の最大 5 回である。受理時刻の判定には記録の createdAt を使わない。
+外部への通信は、DID 文書 1 回、記録の取得 1 回、blob の確認 1 回、Bot の書き込み 1 回、確認依頼の記録の確認 1 回の最大 5 回である。受理時刻の判定には記録の createdAt を使わない。同じ rkey の受領証は、並列に作っても 1 件だけが成功し、後続は InvalidSwap で拒否される。拒否されたときは、保存済みの結果を添えて 409 を返す。
 
 ### D-6: 期限切れ (FR-9)
 

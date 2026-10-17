@@ -73,6 +73,13 @@ export default {
       }
       return Response.json({ n, ok, error })
     }
+    if (u.pathname === "/race") {
+      // 同じ確認依頼への二重受理を、D1 の一意制約で防げるか測る（並列に呼ぶ）
+      const id = u.searchParams.get("id") ?? "x"
+      await env.DB.exec("CREATE TABLE IF NOT EXISTS receipts(checkin_id TEXT PRIMARY KEY, who TEXT)")
+      const r = await env.DB.prepare("INSERT OR IGNORE INTO receipts(checkin_id, who) VALUES (?, ?)").bind(id, crypto.randomUUID()).run()
+      return Response.json({ id, inserted: r.meta.changes })
+    }
     if (u.pathname === "/report") {
       if (req.method === "POST") lastReport = await req.json()
       return Response.json(lastReport)

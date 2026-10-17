@@ -203,6 +203,8 @@ export async function getBotAgent(env: Env): Promise<BotAgent>
 | refreshJwt の期限切れ・未保存  | アプリパスワードで createSession を呼び、保存する |
 | 認証失敗                       | 例外を投げ、定期実行に失敗として記録させる        |
 
+accessJwt の有効期間は 120 分、refreshJwt は 90 日、refreshSession の上限は 1 分あたり 60 回、createSession の上限は 1 アカウントあたり 1 日 10 回である。createSession は定期実行のたびに呼ばず、成功した結果は必ず bot_session に保存する。更新で得た refreshJwt も毎回保存する。
+
 ### D-7: データベースのスキーマ (FR-10)
 
 ```sql
