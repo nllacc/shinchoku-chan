@@ -64,7 +64,7 @@ export const rules = {
   "F-A13":
     "architecture.md は設定の行数（architecture.maxLines。初期 400）以内、機能（H3 または分割ファイル）は設定の行数（architecture.maxFunctionLines。初期 80）以内にする。超えるときは機能を docs/architecture/<機能>.md に分割し、5 章を索引にする",
   "F-A14":
-    "関与する構成要素の集合が設定の類似度（architecture.mergeSimilarity。初期 0.8）以上の機能を2つ以上置かない（統合する）",
+    "関与する構成要素の集合と、図のメッセージ名の集合が、どちらも設定の類似度（architecture.mergeSimilarity。初期 0.8）以上の機能を2つ以上置かない（同じ振る舞いを重複して書かず、統合する）",
   "F-A15":
     "すべての内部の要素が、いずれかの機能の関与に現れる（機能がある場合）",
   "F-A16":
@@ -417,7 +417,8 @@ export async function check(ctx) {
     for (const n of uniq)
       if (!names.all.has(n))
         fa(fn.involvedNo, "F-A11", `関与「${n}」が構成要素表にない`)
-    sets.push({ fn, set: uniq })
+    const entry = { fn, set: uniq, msgs: new Set() }
+    sets.push(entry)
     // 図
     const chapter = { lines: fn.lines.filter((l) => l.no !== fn.involvedNo) }
     const items = splitChapter(chapter, fa)
@@ -444,6 +445,7 @@ export async function check(ctx) {
       continue
     }
     workflow.push(d)
+    for (const e of d.edges) if (e.label) entry.msgs.add(e.label)
     if (d.kind === "sequenceDiagram") {
       const labels = new Set()
       for (const n of d.nodes.values()) {
@@ -465,18 +467,21 @@ export async function check(ctx) {
         if (!uniq.has(n)) fa(d.open.no, "F-A11", `参加者「${n}」が関与にない`)
     }
   }
-  // F-A14: 関与の類似度
+  // F-A14: 同じ振る舞いの重複（関与の集合と図のメッセージ名の集合がどちらも似ている機能）
+  const jaccard = (a, b) => {
+    const inter = [...a].filter((x) => b.has(x)).length
+    const union = a.size + b.size - inter
+    return union === 0 ? 0 : inter / union
+  }
   for (let i = 0; i < sets.length; i++)
     for (let j = i + 1; j < sets.length; j++) {
-      const a = sets[i].set
-      const b = sets[j].set
-      const inter = [...a].filter((x) => b.has(x)).length
-      const sim = inter / (a.size + b.size - inter)
-      if (sim >= cfg.mergeSimilarity)
+      const simSet = jaccard(sets[i].set, sets[j].set)
+      const simMsg = jaccard(sets[i].msgs, sets[j].msgs)
+      if (simSet >= cfg.mergeSimilarity && simMsg >= cfg.mergeSimilarity)
         adder(sets[j].fn.file)(
           sets[j].fn.no,
           "F-A14",
-          `機能「${sets[j].fn.title}」と「${sets[i].fn.title}」の関与が似ている（類似度 ${sim.toFixed(2)} ≧ ${cfg.mergeSimilarity}）。統合する`,
+          `機能「${sets[j].fn.title}」と「${sets[i].fn.title}」は、関与（類似度 ${simSet.toFixed(2)}）と図のメッセージ名（類似度 ${simMsg.toFixed(2)}）がどちらも ${cfg.mergeSimilarity} 以上で、同じ振る舞いとみなせる。統合する`,
         )
     }
   // F-A15: 内部の要素の網羅

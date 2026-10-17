@@ -240,11 +240,11 @@ export const docCases = [
     ARCH_SPECS,
   ],
   [
-    "関与が似た機能が複数ある",
+    "関与と図のメッセージがどちらも同じ機能が複数ある",
     a(
-      rep(
-        "- 関与: 通知バッジ、通知API、配信ワーカー",
-        "- 関与: 発行元システム、配信ワーカー",
+      sub(
+        /### 未読件数の表示\n[\s\S]*?(?=## 6\.)/,
+        `### 通知の再発行\n\n${FIRST_FUNCTION}\n\n`,
       ),
     ),
     "F-A14",
@@ -420,6 +420,31 @@ test("architecture の W001・W004 は経緯・進捗の語を検出する", () 
   const r = run(makeRoot(a(rep("このサービスの", "従来の今後の")), ARCH_SPECS))
   assert.ok(rulesOf(r.findings).includes("W004"), JSON.stringify(r.findings))
   assert.ok(rulesOf(r.findings).includes("W001"), JSON.stringify(r.findings))
+})
+
+test("関与が同じでも図のメッセージが違う機能は、統合を求めない", () => {
+  const sameActors = `### 通知の再送
+
+- 関与: 発行元システム、配信ワーカー
+
+通知の再送は、受理した通知を宛先へ送り直す。
+
+\`\`\`mermaid
+sequenceDiagram
+  participant ext_source as 発行元システム
+  participant worker as 配信ワーカー
+  worker->>ext_source: 再送の可否を照会
+  ext_source-->>worker: 再送の指示
+\`\`\`
+
+`
+  const r = run(
+    makeRoot(
+      a(sub(/### 未読件数の表示\n/, `${sameActors}### 未読件数の表示\n`)),
+      ARCH_SPECS,
+    ),
+  )
+  assert.deepEqual(r.findings, [])
 })
 
 test("architecture の3章で関係図が循環すると G009 を検出する", () => {
