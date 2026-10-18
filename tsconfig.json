@@ -30,7 +30,8 @@
     "lexicons",
     "scripts/**/*.mjs",
     "vitest.config.ts",
-    "tests/scoring"
+    "tests/scoring",
+    "tests/receipt"
   ],
   "exclude": [
     "poc",

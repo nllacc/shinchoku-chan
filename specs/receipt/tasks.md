@@ -3,11 +3,11 @@
 ## Phase 1: 作業の受理
 
 - 対応: D-1, D-2, D-3, D-4, D-8
-- [ ] T-1.1: `src/receipt/botRepo.ts` に Bot のリポジトリへの書き込みを実装する。
-- [ ] T-1.2: `src/receipt/anchor.ts` に起点投稿の検証を実装する。
-- [ ] T-1.3: `src/receipt/windows.ts` に窓の算出を実装し、設計の例の表を単体テストにする。
-- [ ] T-1.4: `src/receipt/enroll.ts` に作業の受理を実装する。
-- [ ] T-1.5: `src/receipt/routes.ts` に API の経路を登録する。
+- [x] T-1.1: `src/receipt/botRepo.ts` に Bot のリポジトリへの書き込みを実装する。
+- [x] T-1.2: `src/receipt/anchor.ts` に起点投稿の検証を実装する。
+- [x] T-1.3: `src/receipt/windows.ts` に窓の算出を実装し、設計の例の表を単体テストにする。
+- [x] T-1.4: `src/receipt/enroll.ts` に作業の受理を実装する。
+- [x] T-1.5: `src/receipt/routes.ts` に API の経路を登録する。
 - 検証: `npx vitest run tests/receipt/windows.test.ts tests/receipt/anchor.test.ts tests/receipt/enroll.test.ts`
 
 ## Phase 2: 報告の受理
