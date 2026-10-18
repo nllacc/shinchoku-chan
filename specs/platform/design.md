@@ -143,11 +143,10 @@ export function registerTick(handler: TickHandler): void
 export async function runTick(now: number, env: Env): Promise<TickResult[]>
 ```
 
-| 段階       | 内容                                                          |
-| ---------- | ------------------------------------------------------------- |
-| オプション | 環境変数から読む。保存先は読まない                            |
-| 処理の実行 | 登録順に1つずつ実行。例外は握りつぶさず name とともに記録する |
-| 結果       | { name, ok, ms, error? } の配列                               |
+| 段階       | 内容                                                                                                      |
+| ---------- | --------------------------------------------------------------------------------------------------------- |
+| オプション | 環境変数から読む。保存先は読まない                                                                        |
+| 処理の実行 | 登録順に1つずつ実行。例外は握りつぶさず name とともに記録し、結果は { name, ok, ms, error? } の配列にする |
 
 ### D-3: システムオプション (FR-3)
 
@@ -172,12 +171,13 @@ export function loadOptions(env: Env): typeof DEFAULT_OPTIONS
 
 ### D-4: 日本時間 (FR-4)
 
-| 名前                       | 定義                                                                               |
-| -------------------------- | ---------------------------------------------------------------------------------- |
-| JST_OFFSET_MS              | 9 \* 60 \* 60 \* 1000                                                              |
-| jstDayStart(ms)            | floor((ms + JST_OFFSET_MS) / 86400000) \* 86400000 - JST_OFFSET_MS                 |
-| slotToWindow(slot)         | morning は 480〜720、noon は 720〜960、evening は 960〜1200（JST の 0 時からの分） |
-| windowToRange(dayStart, w) | from は dayStart + w.startMinute × 60000、to は dayStart + w.endMinute × 60000     |
+| 名前                           | 定義                                                                               |
+| ------------------------------ | ---------------------------------------------------------------------------------- |
+| JST_OFFSET_MS                  | 9 \* 60 \* 60 \* 1000                                                              |
+| jstDayStart(ms)                | floor((ms + JST_OFFSET_MS) / 86400000) \* 86400000 - JST_OFFSET_MS                 |
+| slotToWindow(slot)             | morning は 480〜720、noon は 720〜960、evening は 960〜1200（JST の 0 時からの分） |
+| windowToRange(dayStart, w)     | from は dayStart + w.startMinute × 60000、to は dayStart + w.endMinute × 60000     |
+| dayNumber(ms)、minuteOfDay(ms) | 日本時間の日番号（1970-01-01 が 0）、日本時間の 0 時からの分（0 以上 1440 未満）   |
 
 日の境界は日本時間の深夜 0 時である。
 
@@ -249,7 +249,7 @@ export function createD1Store(db: D1Database): DataStore
 | 集合         | 操作                                                                                                                                                                                                                                                                                         |
 | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | botSession   | get()、put(row)                                                                                                                                                                                                                                                                              |
-| entitlements | get(did)                                                                                                                                                                                                                                                                                     |
+| entitlements | get(did)、put(row)                                                                                                                                                                                                                                                                           |
 | plans        | get(dayStart)、putIfAbsent(row)（先に保存された行があればそれを返す）                                                                                                                                                                                                                        |
 | tasks        | get(id)、getMany(ids)、getByTaskUri(uri)、put(row)、putMany(rows)、patch(id, fields)、countActive(did)、countActiveBySlot(dayStart)、listPriority(dayStart, limit)、listCandidates(now, limit)、listPendingResult(now, limit)、listFinalizable(now, limit)、listDueForRecheck(before, limit) |
 | openCheckins | get(id)、getMany(ids)、put(row)、putMany(rows)、patch(id, { replyUri })、delete(id)、deleteMany(ids)、listExpired(now, limit)、listUnreplied(now, limit)                                                                                                                                     |
