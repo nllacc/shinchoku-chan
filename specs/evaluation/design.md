@@ -169,7 +169,7 @@ export function handleAnswerRequest(req: Request, env: Env): Promise<Response>
 export function handleAcceptanceView(req: Request, env: Env, key: string): Promise<Response>
 ```
 
-受理のキーで受理レコードと結果レコードを取得し、`{ text, dueDate, remindMinute, evaluated }` を返す。受理がなければ種別 not_found で返す。
+受理のキーで受理レコードと結果レコードを取得し、`{ uri, cid, owner, text, dueDate, remindMinute, evaluated }` を返す。受理がなければ種別 not_found で返す。
 
 ### D-8: 文面 (FR-3, FR-4, FR-5)
 
