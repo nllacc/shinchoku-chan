@@ -19,7 +19,7 @@ export default defineConfig({
         ],
         test: {
           name: "workers",
-          include: ["tests/platform/**/*.test.ts", "tests/lexicon/**/*.test.ts"],
+          include: ["tests/platform/**/*.test.ts", "tests/lexicon/**/*.test.ts", "tests/scoring/**/*.test.ts"],
           setupFiles: ["./tests/setup/applyMigrations.ts"],
         },
       },

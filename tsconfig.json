@@ -29,7 +29,8 @@
     "tests/env.d.ts",
     "lexicons",
     "scripts/**/*.mjs",
-    "vitest.config.ts"
+    "vitest.config.ts",
+    "tests/scoring"
   ],
   "exclude": [
     "poc",
