@@ -1,0 +1,22 @@
+{
+  "lexicon": 1,
+  "id": "com.example.shinchoku.progress",
+  "defs": {
+    "main": {
+      "type": "record",
+      "key": "tid",
+      "record": {
+        "type": "object",
+        "required": ["task", "checkin", "value", "createdAt"],
+        "properties": {
+          "task": { "type": "ref", "ref": "com.atproto.repo.strongRef" },
+          "checkin": { "type": "ref", "ref": "com.atproto.repo.strongRef" },
+          "value": { "type": "integer" },
+          "note": { "type": "string", "maxGraphemes": 140, "maxLength": 700 },
+          "evidence": { "type": "blob", "accept": ["image/jpeg", "image/png", "image/webp"], "maxSize": 1000000 },
+          "createdAt": { "type": "string", "format": "datetime" }
+        }
+      }
+    }
+  }
+}
