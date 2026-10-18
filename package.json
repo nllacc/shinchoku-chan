@@ -13,6 +13,7 @@
     "build": "vite build && node scripts/check-size.mjs",
     "test:e2e": "playwright test",
     "seed:dev": "node scripts/dev-seed.mjs > /tmp/seed.sql && wrangler d1 migrations apply shinchoku-chan --local && wrangler d1 execute shinchoku-chan --local --file /tmp/seed.sql",
+    "deploy:preview": "vite build && node scripts/dev-seed.mjs > /tmp/seed.sql && wrangler d1 migrations apply shinchoku-chan-preview --env preview --remote && wrangler d1 execute shinchoku-chan-preview --env preview --remote --file /tmp/seed.sql && wrangler deploy --env preview",
     "check:ui": "node scripts/check-ui-usage.mjs && node scripts/check-css-tokens.mjs && node scripts/check-contrast.mjs"
   },
   "devDependencies": {

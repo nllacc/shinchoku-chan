@@ -22,3 +22,27 @@ migrations_dir = "migrations"
 BOT_DID = "did:plc:placeholder"
 BOT_HANDLE = "shinchokuchan.bsky.social"
 PUBLIC_ORIGIN = "https://localhost:8787"
+
+# 確認用の環境(架空のデータだけを入れる。本番とは別の Worker と D1)。npm run deploy:preview
+[env.preview]
+name = "shinchoku-chan-preview"
+
+# 定期実行は止める(架空のデータに対して外部へ通信しないため)
+[env.preview.triggers]
+crons = []
+
+[env.preview.assets]
+directory = "dist/web"
+not_found_handling = "single-page-application"
+binding = "ASSETS"
+
+[[env.preview.d1_databases]]
+binding = "DB"
+database_name = "shinchoku-chan-preview"
+database_id = "59e12b32-16f0-4784-9f0d-ed2da21350f5"
+migrations_dir = "migrations"
+
+[env.preview.vars]
+BOT_DID = "did:plc:placeholder"
+BOT_HANDLE = "shinchokuchan.bsky.social"
+PUBLIC_ORIGIN = "https://shinchoku-chan-preview.nlla.workers.dev"
