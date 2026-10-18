@@ -31,7 +31,8 @@
     "scripts/**/*.mjs",
     "vitest.config.ts",
     "tests/scoring",
-    "tests/receipt"
+    "tests/receipt",
+    "tests/ranking"
   ],
   "exclude": [
     "poc",
