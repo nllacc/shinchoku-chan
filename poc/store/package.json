@@ -1,0 +1,10 @@
+{
+  "name": "poc-store",
+  "private": true,
+  "type": "module",
+  "devDependencies": { "wrangler": "*" },
+  "scripts": {
+    "dev": "wrangler dev --port 8788",
+    "deploy": "wrangler deploy"
+  }
+}

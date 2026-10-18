@@ -347,7 +347,7 @@ export async function deriveUnit(s: string, p: string[]): Promise<number>
 | reports       | checkin_id            | (checked_at)、(task_id, received_at)                                                                                                             |
 | evaluations   | task_id               | (visible, score_hundredths DESC, finalized_at DESC, task_id DESC)、(visible, final_rate_permille DESC, finalized_at DESC, task_id DESC)、(stale) |
 
-D1 の実装は、列名をスネークケースへ対応させ、真偽は 0 と 1、配列は JSON の文字列として保存する。tasks の task_uri は一意とし、status と resultState は取りうる値を CHECK 制約で縛る。スキーマの正本は migrations/0001_init.sql である。
+D1 の実装は、列名をスネークケースへ対応させ、真偽は 0 と 1、配列は JSON の文字列として保存する。put は ON CONFLICT DO UPDATE の upsert で書く（置換より書く行数が少ない）。getMany は束縛変数の上限が 100 個のため 100 個ずつの SELECT に分け、putMany と deleteMany は 1 行ずつの文を、これらはまとめて 1 回の batch で送る。tasks の task_uri は一意とし、status と resultState は取りうる値を CHECK 制約で縛る。スキーマの正本は migrations/0001_init.sql である。
 
 ### D-13: 運用スクリプト (FR-10, FR-11)
 
