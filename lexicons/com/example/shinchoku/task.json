@@ -7,15 +7,39 @@
       "key": "tid",
       "record": {
         "type": "object",
-        "required": ["summary", "title", "goal", "metric", "durationDays", "anchor", "createdAt"],
+        "required": [
+          "summary",
+          "title",
+          "goal",
+          "metric",
+          "durationDays",
+          "anchor",
+          "createdAt"
+        ],
         "properties": {
-          "summary": { "type": "string", "maxGraphemes": 300, "maxLength": 1500 },
-          "title": { "type": "string", "minLength": 1, "maxGraphemes": 12, "maxLength": 120 },
+          "summary": {
+            "type": "string",
+            "maxGraphemes": 300,
+            "maxLength": 1500
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxGraphemes": 12,
+            "maxLength": 120
+          },
           "goal": { "type": "string", "maxGraphemes": 200, "maxLength": 1000 },
-          "metric": { "type": "ref", "ref": "com.example.shinchoku.defs#metric" },
+          "metric": {
+            "type": "ref",
+            "ref": "com.example.shinchoku.defs#metric"
+          },
           "durationDays": { "type": "integer", "minimum": 1, "maximum": 7 },
           "slot": { "type": "ref", "ref": "com.example.shinchoku.defs#slot" },
-          "startImage": { "type": "blob", "accept": ["image/jpeg", "image/png", "image/webp"], "maxSize": 1000000 },
+          "startImage": {
+            "type": "blob",
+            "accept": ["image/jpeg", "image/png", "image/webp"],
+            "maxSize": 1000000
+          },
           "anchor": { "type": "ref", "ref": "com.atproto.repo.strongRef" },
           "createdAt": { "type": "string", "format": "datetime" }
         }

@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest"
 import { Lexicons } from "@atproto/lexicon"
-import { LEXICON_DOCS } from "../../lexicons/registry"
+import { EXTERNAL_DOCS, LEXICON_DOCS } from "../../lexicons/registry"
 import { NSID } from "../../src/lexicon/nsid"
 import type { ProgressRecord, ResultRecord, TaskRecord } from "../../src/lexicon/types"
 
@@ -42,7 +42,7 @@ describe("ユーザー側レコード", () => {
   })
 
   test("lexiconの定義がLexiconsに登録できる", () => {
-    const lex = new Lexicons(LEXICON_DOCS as any)
+    const lex = new Lexicons([...LEXICON_DOCS, ...EXTERNAL_DOCS] as any)
     expect(lex.get(NSID.task)).toBeTruthy()
   })
 })

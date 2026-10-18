@@ -9,8 +9,16 @@
         "name": { "type": "string", "maxGraphemes": 30, "maxLength": 150 },
         "unit": { "type": "string", "maxGraphemes": 10, "maxLength": 50 },
         "scale": { "type": "integer", "minimum": 0, "maximum": 3 },
-        "startValue": { "type": "integer", "minimum": -1000000000, "maximum": 1000000000 },
-        "goalValue": { "type": "integer", "minimum": -1000000000, "maximum": 1000000000 }
+        "startValue": {
+          "type": "integer",
+          "minimum": -1000000000,
+          "maximum": 1000000000
+        },
+        "goalValue": {
+          "type": "integer",
+          "minimum": -1000000000,
+          "maximum": 1000000000
+        }
       }
     },
     "slot": {

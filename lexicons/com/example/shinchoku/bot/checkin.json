@@ -1,0 +1,53 @@
+{
+  "lexicon": 1,
+  "id": "com.example.shinchoku.bot.checkin",
+  "defs": {
+    "main": {
+      "type": "record",
+      "key": "any",
+      "record": {
+        "type": "object",
+        "required": [
+          "subject",
+          "enrollment",
+          "kind",
+          "nonce",
+          "issuedAt",
+          "expiresAt"
+        ],
+        "properties": {
+          "subject": {
+            "type": "string",
+            "format": "did"
+          },
+          "enrollment": {
+            "type": "ref",
+            "ref": "com.atproto.repo.strongRef"
+          },
+          "kind": {
+            "type": "string",
+            "knownValues": ["progress", "result"],
+            "maxLength": 20
+          },
+          "seq": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "nonce": {
+            "type": "string",
+            "minLength": 22,
+            "maxLength": 22
+          },
+          "issuedAt": {
+            "type": "string",
+            "format": "datetime"
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "datetime"
+          }
+        }
+      }
+    }
+  }
+}

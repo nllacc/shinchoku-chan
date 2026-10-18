@@ -56,7 +56,61 @@ export type RecordMap = {
   [NSID.task]: TaskRecord
   [NSID.progress]: ProgressRecord
   [NSID.result]: ResultRecord
+  [NSID.enrollment]: EnrollmentRecord
+  [NSID.checkin]: CheckinRecord
+  [NSID.receipt]: ReceiptRecord
+  [NSID.revocation]: RevocationRecord
+  [NSID.evaluation]: EvaluationRecord
 }
 
 // コレクション識別子から型を引く
-export type RecordOf<K extends CollectionNsid> = K extends keyof RecordMap ? RecordMap[K] : never
+export type RecordOf<K extends CollectionNsid> = RecordMap[K]
+
+export type EnrollmentRecord = {
+  subject: string
+  task: StrongRef
+  startedAt: string
+  endsAt: string
+  durationDays: number
+  windows: TimeWindow[]
+  dailyTarget: number
+  scale: number
+  startValue: number
+  goalValue: number
+}
+
+export type CheckinRecord = {
+  subject: string
+  enrollment: StrongRef
+  kind: "progress" | "result" | (string & {})
+  seq?: number
+  nonce: string
+  issuedAt: string
+  expiresAt: string
+}
+
+export type ReceiptRecord = {
+  subject: string
+  checkin: StrongRef
+  status: "accepted" | "expired" | (string & {})
+  record?: StrongRef
+  value?: number
+  receivedAt: string
+}
+
+export type RevocationRecord = {
+  subject: string
+  target: StrongRef
+  reason: "tampered" | "deleted" | (string & {})
+  detectedAt: string
+}
+
+export type EvaluationRecord = {
+  subject: string
+  enrollment: StrongRef
+  algorithm: string
+  scoreHundredths: number
+  finalRatePermille: number
+  missingCount: number
+  finalizedAt: string
+}

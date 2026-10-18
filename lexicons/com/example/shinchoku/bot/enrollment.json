@@ -1,0 +1,77 @@
+{
+  "lexicon": 1,
+  "id": "com.example.shinchoku.bot.enrollment",
+  "defs": {
+    "main": {
+      "type": "record",
+      "key": "any",
+      "record": {
+        "type": "object",
+        "required": [
+          "subject",
+          "task",
+          "startedAt",
+          "endsAt",
+          "durationDays",
+          "windows",
+          "dailyTarget",
+          "scale",
+          "startValue",
+          "goalValue"
+        ],
+        "properties": {
+          "subject": {
+            "type": "string",
+            "format": "did"
+          },
+          "task": {
+            "type": "ref",
+            "ref": "com.atproto.repo.strongRef"
+          },
+          "startedAt": {
+            "type": "string",
+            "format": "datetime"
+          },
+          "endsAt": {
+            "type": "string",
+            "format": "datetime"
+          },
+          "durationDays": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 7
+          },
+          "windows": {
+            "type": "array",
+            "minLength": 1,
+            "maxLength": 10,
+            "items": {
+              "type": "ref",
+              "ref": "com.example.shinchoku.defs#timeWindow"
+            }
+          },
+          "dailyTarget": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10
+          },
+          "scale": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 3
+          },
+          "startValue": {
+            "type": "integer",
+            "minimum": -1000000000,
+            "maximum": 1000000000
+          },
+          "goalValue": {
+            "type": "integer",
+            "minimum": -1000000000,
+            "maximum": 1000000000
+          }
+        }
+      }
+    }
+  }
+}

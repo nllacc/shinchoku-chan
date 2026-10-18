@@ -2,16 +2,16 @@
 
 ## 1. 構成
 
-| パス                               | 責務                                                      |
-| ---------------------------------- | --------------------------------------------------------- |
-| `lexicons/registry.ts`             | lexicons/ 配下の JSON 9ファイル（正本）を読み込んで束ねる |
-| `src/lexicon/nsid.ts`              | 名前空間の接頭辞とコレクション識別子                      |
-| `src/lexicon/types.ts`             | 各レコードの TypeScript 型                                |
-| `src/lexicon/numeric.ts`           | 整数スケール値の変換と進捗率の算出                        |
-| `src/lexicon/validate.ts`          | 構造検証と意味規則の検証                                  |
-| `scripts/rename-namespace.mjs`     | 名前空間の接頭辞の一括変更                                |
-| `scripts/check-lexicon-compat.mjs` | 公開済みスキーマとの互換性検査                            |
-| `lexicons.lock.json`               | 公開済みスキーマのスナップショット                        |
+| パス                               | 責務                                                                         |
+| ---------------------------------- | ---------------------------------------------------------------------------- |
+| `lexicons/registry.ts`             | lexicons/ 配下の JSON 9ファイル（正本）と参照先の標準定義 strongRef を束ねる |
+| `src/lexicon/nsid.ts`              | 名前空間の接頭辞とコレクション識別子                                         |
+| `src/lexicon/types.ts`             | 各レコードの TypeScript 型                                                   |
+| `src/lexicon/numeric.ts`           | 整数スケール値の変換と進捗率の算出                                           |
+| `src/lexicon/validate.ts`          | 構造検証と意味規則の検証                                                     |
+| `scripts/rename-namespace.mjs`     | 名前空間の接頭辞の一括変更                                                   |
+| `scripts/check-lexicon-compat.mjs` | 公開済みスキーマとの互換性検査                                               |
+| `lexicons.lock.json`               | 公開済みスキーマのスナップショット                                           |
 
 ## 2. 関係図・ワークフロー
 

@@ -1,0 +1,53 @@
+{
+  "lexicon": 1,
+  "id": "com.example.shinchoku.bot.evaluation",
+  "defs": {
+    "main": {
+      "type": "record",
+      "key": "tid",
+      "record": {
+        "type": "object",
+        "required": [
+          "subject",
+          "enrollment",
+          "algorithm",
+          "scoreHundredths",
+          "finalRatePermille",
+          "missingCount",
+          "finalizedAt"
+        ],
+        "properties": {
+          "subject": {
+            "type": "string",
+            "format": "did"
+          },
+          "enrollment": {
+            "type": "ref",
+            "ref": "com.atproto.repo.strongRef"
+          },
+          "algorithm": {
+            "type": "string",
+            "maxLength": 32
+          },
+          "scoreHundredths": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 10000
+          },
+          "finalRatePermille": {
+            "type": "integer"
+          },
+          "missingCount": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 64
+          },
+          "finalizedAt": {
+            "type": "string",
+            "format": "datetime"
+          }
+        }
+      }
+    }
+  }
+}

@@ -20,10 +20,10 @@
 ## Phase 3: Bot側レコード
 
 - 対応: D-4, D-5
-- [ ] T-3.1: 受理・確認依頼の lexicon JSON を作成する。
-- [ ] T-3.2: 受領証・取消・評価の lexicon JSON を作成する。
-- [ ] T-3.3: `src/lexicon/types.ts` に Bot 側5種の型を追加する。
-- [ ] T-3.4: 更新日時の項目がないこと、未知の status を許容することをテストする。
+- [x] T-3.1: 受理・確認依頼の lexicon JSON を作成する。
+- [x] T-3.2: 受領証・取消・評価の lexicon JSON を作成する。
+- [x] T-3.3: `src/lexicon/types.ts` に Bot 側5種の型を追加する。
+- [x] T-3.4: 更新日時の項目がないこと、未知の status を許容することをテストする。
 - 検証: `npx vitest run tests/lexicon/botRecords.test.ts`
 
 ## Phase 4: 数値変換と検証

@@ -1,0 +1,33 @@
+{
+  "lexicon": 1,
+  "id": "com.example.shinchoku.bot.revocation",
+  "defs": {
+    "main": {
+      "type": "record",
+      "key": "tid",
+      "record": {
+        "type": "object",
+        "required": ["subject", "target", "reason", "detectedAt"],
+        "properties": {
+          "subject": {
+            "type": "string",
+            "format": "did"
+          },
+          "target": {
+            "type": "ref",
+            "ref": "com.atproto.repo.strongRef"
+          },
+          "reason": {
+            "type": "string",
+            "knownValues": ["tampered", "deleted"],
+            "maxLength": 20
+          },
+          "detectedAt": {
+            "type": "string",
+            "format": "datetime"
+          }
+        }
+      }
+    }
+  }
+}

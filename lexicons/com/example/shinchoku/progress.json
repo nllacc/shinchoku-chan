@@ -13,7 +13,11 @@
           "checkin": { "type": "ref", "ref": "com.atproto.repo.strongRef" },
           "value": { "type": "integer" },
           "note": { "type": "string", "maxGraphemes": 140, "maxLength": 700 },
-          "evidence": { "type": "blob", "accept": ["image/jpeg", "image/png", "image/webp"], "maxSize": 1000000 },
+          "evidence": {
+            "type": "blob",
+            "accept": ["image/jpeg", "image/png", "image/webp"],
+            "maxSize": 1000000
+          },
           "createdAt": { "type": "string", "format": "datetime" }
         }
       }
