@@ -20,10 +20,16 @@
     "resolveJsonModule": true
   },
   "include": [
-    "src",
-    "tests",
+    "src/worker",
+    "src/platform",
+    "src/lexicon",
+    "tests/platform",
+    "tests/lexicon",
+    "tests/setup",
+    "tests/env.d.ts",
     "lexicons",
-    "scripts/**/*.mjs"
+    "scripts/**/*.mjs",
+    "vitest.config.ts"
   ],
   "exclude": [
     "poc",

@@ -1,0 +1,60 @@
+/* 部品の値。用途の値だけを参照する */
+:root {
+  --button-bg: var(--color-primary);
+  --button-text: var(--color-primary-text);
+  --button-radius: var(--shape-radius-control);
+  --button-padding: var(--spacing-control);
+  --button-height: var(--size-control-height);
+  --button-font-size: var(--text-size-body);
+  --button-secondary-bg: var(--color-surface-raised);
+  --button-secondary-text: var(--color-text);
+  --button-danger-bg: var(--color-danger);
+  --button-danger-text: var(--color-danger-text);
+  --button-border-width: var(--shape-border-width);
+  --button-border-color: var(--color-border);
+
+  --field-border-color: var(--color-border);
+  --field-border-width: var(--shape-border-width);
+  --field-radius: var(--shape-radius-control);
+  --field-bg: var(--color-surface-raised);
+  --field-text: var(--color-text);
+  --field-padding: var(--spacing-control);
+  --field-height: var(--size-control-height);
+  --field-gap: var(--spacing-tight);
+  --field-label-size: var(--text-size-small);
+  --field-hint-color: var(--color-muted);
+  --field-error-color: var(--color-danger);
+
+  --card-bg: var(--color-surface-raised);
+  --card-border-color: var(--color-border);
+  --card-border-width: var(--shape-border-width);
+  --card-radius: var(--shape-radius-panel);
+  --card-padding: var(--spacing-block);
+  --card-gap: var(--spacing-control);
+
+  --dialog-bg: var(--color-surface-raised);
+  --dialog-text: var(--color-text);
+  --dialog-radius: var(--shape-radius-panel);
+  --dialog-padding: var(--spacing-block);
+  --dialog-overlay: var(--color-overlay);
+  --dialog-border-color: var(--color-border);
+  --dialog-border-width: var(--shape-border-width);
+
+  --table-border-color: var(--color-border);
+  --table-border-width: var(--shape-border-width);
+  --table-header-bg: var(--color-surface);
+  --table-padding: var(--spacing-control);
+  --table-text: var(--color-text);
+  --table-muted: var(--color-muted);
+
+  --badge-bg: var(--color-primary);
+  --badge-text: var(--color-primary-text);
+  --badge-radius: var(--shape-radius-control);
+  --badge-padding: var(--spacing-tight);
+  --badge-font-size: var(--text-size-small);
+  --badge-danger-bg: var(--color-danger);
+  --badge-danger-text: var(--color-danger-text);
+
+  --focus-color: var(--color-focus);
+  --focus-width: var(--shape-outline-width);
+}

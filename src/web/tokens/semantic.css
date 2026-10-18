@@ -1,0 +1,58 @@
+/* 用途の値。素の値だけを参照する */
+:root {
+  --color-text: var(--gray-900);
+  --color-surface: var(--gray-50);
+  --color-surface-raised: var(--gray-0);
+  --color-border: var(--gray-300);
+  --color-muted: var(--gray-600);
+  --color-primary: var(--blue-600);
+  --color-primary-text: var(--gray-0);
+  --color-danger: var(--red-600);
+  --color-danger-text: var(--gray-0);
+  --color-focus: var(--blue-500);
+  --color-overlay: rgb(28 31 38 / 0.5);
+
+  --spacing-tight: var(--space-1);
+  --spacing-control: var(--space-2);
+  --spacing-block: var(--space-3);
+  --spacing-section: var(--space-4);
+  --shape-radius-control: var(--radius-1);
+  --shape-radius-panel: var(--radius-2);
+  --shape-border-width: var(--border-width-1);
+  --shape-outline-width: var(--outline-width-1);
+  --text-size-small: var(--font-size-1);
+  --text-size-body: var(--font-size-2);
+  --text-size-heading: var(--font-size-3);
+  --text-size-title: var(--font-size-4);
+  --size-control-height: var(--size-touch);
+  --size-content-max: var(--size-content);
+}
+
+/* 暗テーマ。環境設定と手動の指定の両方を扱う */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-text: var(--gray-50);
+    --color-surface: var(--gray-900);
+    --color-surface-raised: var(--gray-800);
+    --color-border: var(--gray-700);
+    --color-muted: var(--gray-400);
+    --color-primary: var(--blue-300);
+    --color-primary-text: var(--gray-900);
+    --color-danger: var(--red-300);
+    --color-danger-text: var(--gray-900);
+    --color-focus: var(--blue-300);
+  }
+}
+
+:root[data-theme="dark"] {
+  --color-text: var(--gray-50);
+  --color-surface: var(--gray-900);
+  --color-surface-raised: var(--gray-800);
+  --color-border: var(--gray-700);
+  --color-muted: var(--gray-400);
+  --color-primary: var(--blue-300);
+  --color-primary-text: var(--gray-900);
+  --color-danger: var(--red-300);
+  --color-danger-text: var(--gray-900);
+  --color-focus: var(--blue-300);
+}

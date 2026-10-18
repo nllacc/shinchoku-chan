@@ -1,0 +1,26 @@
+body {
+  margin: 0;
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-family: system-ui, -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif;
+  font-size: var(--text-size-body);
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+img,
+table {
+  max-width: 100%;
+}
+
+.page {
+  max-width: var(--size-content-max);
+  margin: 0 auto;
+  padding: var(--spacing-block);
+}

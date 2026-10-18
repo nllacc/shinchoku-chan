@@ -67,11 +67,8 @@ stateDiagram-v2
   --blue-500: #3b6fd4;
   --gray-900: #1c1f26;
   --gray-50: #f6f7f9;
-  --space-1: 4px;
   --space-2: 8px;
-  --space-3: 16px;
   --radius-1: 6px;
-  --font-size-1: 14px;
 }
 
 /* semantic.css: 用途の値。素の値だけを参照する */
@@ -79,12 +76,13 @@ stateDiagram-v2
   --color-primary: var(--blue-500);
   --color-text: var(--gray-900);
   --color-surface: var(--gray-50);
+  --shape-radius-control: var(--radius-1);
 }
 
 /* component.css: 部品の値。用途の値だけを参照する */
 :root {
   --button-bg: var(--color-primary);
-  --button-radius: var(--radius-1);
+  --button-radius: var(--shape-radius-control);
 }
 ```
 
@@ -99,7 +97,7 @@ stateDiagram-v2
 ```js
 // node scripts/check-css-tokens.mjs  — 違反があれば一覧を出力して終了コード 1
 export function checkTokenUsage(files) {
-  // 1. tokens/component.css の var() 参照先が --color- で始まる用途の値であること
+  // 1. tokens/component.css の var() 参照先が semantic.css で定義された用途の値であること
   // 2. src/web/ui/*.module.css に色（#, rgb, hsl）と 0 以外の長さ（px, rem, em）がないこと
   // 3. tokens/semantic.css が部品の値を参照していないこと
 }

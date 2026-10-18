@@ -4,3 +4,5 @@ node_modules
 dist
 .env
 public/app.js
+test-results
+playwright-report

@@ -8,6 +8,7 @@ crons = ["*/5 * * * *"]
 
 [assets]
 directory = "dist/web"
+not_found_handling = "single-page-application"
 binding = "ASSETS"
 
 # database_id は D1 の作成後に実際の値へ置き換える（試験では使わない）
