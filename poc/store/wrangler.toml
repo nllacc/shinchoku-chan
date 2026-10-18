@@ -1,9 +1,0 @@
-name = "shinchoku-store-poc"
-account_id = "bb9aafbcf2d972104615df50956e2920"
-main = "worker.mjs"
-compatibility_date = "2026-09-01"
-
-[[d1_databases]]
-binding = "DB"
-database_name = "shinchoku-poc"
-database_id = "878efdef-28a9-4c9d-ac78-902776e1b6e8"

@@ -3,7 +3,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "npm run dev --prefix poc/worker",
+    "predev": "node scripts/free-port.mjs 8787 && mkdir -p dist/web",
+    "dev": "wrangler dev --ip 0.0.0.0 --port 8787",
     "typecheck": "tsc",
     "test": "CLOUDFLARE_LOAD_DEV_VARS_FROM_DOT_ENV=false vitest run",
     "setup:spec": "npm ci --ignore-scripts --prefix .claude/skills/spec-driven-development/scripts",
