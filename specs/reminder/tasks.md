@@ -3,7 +3,7 @@
 ## Phase 1: 文面と宛先
 
 - 対応: D-3, D-5
-- [ ] T-1.1: 起点の種類から投稿の宛先を決める関数を実装する。
+- [ ] T-1.1: 起点の種類から投稿の宛先を求める関数を実装する。
 - [ ] T-1.2: リマインドと評価依頼の文面を実装し、同じ計画で同じ文例になるテストを追加する。
 - 検証: `npx vitest run tests/reminder/target.test.ts tests/reminder/messages.test.ts`
 
