@@ -29,10 +29,10 @@
 ## Phase 4: 数値変換と検証
 
 - 対応: D-6, D-7
-- [ ] T-4.1: `src/lexicon/numeric.ts` を実装し、表の3例を単体テストにする。
-- [ ] T-4.2: `src/lexicon/validate.ts` の構造検証を実装する。
-- [ ] T-4.3: 識別子ごとの意味規則（作業名の規則を含む）を実装し、理由コードごとにテストする。
-- [ ] T-4.4: 上限長の作業レコードを1000回検証する性能テストを追加する。
+- [x] T-4.1: `src/lexicon/numeric.ts` を実装し、表の3例を単体テストにする。
+- [x] T-4.2: `src/lexicon/validate.ts` の構造検証を実装する。
+- [x] T-4.3: 識別子ごとの意味規則（作業名の規則を含む）を実装し、理由コードごとにテストする。
+- [x] T-4.4: 上限長の作業レコードを1000回検証する性能テストを追加する。
 - 検証: `npx vitest run tests/lexicon/numeric.test.ts tests/lexicon/validate.test.ts tests/lexicon/perf.test.ts`
 
 ## Phase 5: 互換性検査
