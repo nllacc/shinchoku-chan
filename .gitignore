@@ -6,3 +6,4 @@ dist
 public/app.js
 test-results
 playwright-report
+preview
