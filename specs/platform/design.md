@@ -14,7 +14,7 @@
 | `src/platform/pds.ts`         | DID の解決、公開レコードの取得、CID の照合             |
 | `src/platform/botSession.ts`  | Bot のセッションの取得と更新                           |
 | `src/platform/entitlement.ts` | 利用資格の機能フラグの読み出し                         |
-| `src/platform/rkey.ts`        | Bot のレコードのキーの導出                             |
+| `src/platform/rkey.ts`        | Bot のレコードのキーの導出と、キーを指定した作成       |
 | `src/platform/store.ts`       | 保存先の契約、行の型、保存先の選択                     |
 | `src/platform/rows.ts`        | レコードから行を作る純粋関数                           |
 | `src/platform/d1Store.ts`     | D1 による契約の実装                                    |
@@ -301,12 +301,12 @@ export function createD1Store(db: D1Database): DataStore
 
 ### D-10: 作成と登録の分離 (FR-8)
 
-| 関数                                                                       | 入力                                                           | 出力           |
-| -------------------------------------------------------------------------- | -------------------------------------------------------------- | -------------- |
-| taskRowFromRecords({ enrollment, enrollmentRef, task, owner, flags })      | 受理と作業のレコード、所有者の did と handle、利用資格のフラグ | TaskRow        |
-| reportRowFromRecords({ receipt, receiptRef, kind, userRecord, recordRef }) | 受領証とユーザーの報告のレコードと参照                         | ReportRow      |
-| openCheckinRowFromRecords({ checkin, checkinRef, taskId, replyUri })       | 確認依頼のレコードと参照、返信の URI                           | OpenCheckinRow |
-| evaluationRowFromRecords({ evaluation, evaluationRef, task })              | 評価のレコードと参照、作業の行                                 | EvaluationRow  |
+| 関数                                                                               | 入力                                                                                                   | 出力           |
+| ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ | -------------- |
+| taskRowFromRecords({ enrollment, enrollmentRef, task, owner, flags })              | 受理と作業のレコード、所有者の did と handle と pds、利用資格のフラグ。作業が削除済みなら task は null | TaskRow        |
+| reportRowFromRecords({ receipt, receiptRef, kind, taskId, userRecord, recordRef }) | 受領証とユーザーの報告のレコードと参照                                                                 | ReportRow      |
+| openCheckinRowFromRecords({ checkin, checkinRef, taskId, replyUri })               | 確認依頼のレコードと参照、返信の URI                                                                   | OpenCheckinRow |
+| evaluationRowFromRecords({ evaluation, evaluationRef, task })                      | 評価のレコードと参照、作業の行                                                                         | EvaluationRow  |
 
 入力のレコードの型は、必要な項目だけを持つ構造的な型である。lexicon のレコードの型はこれを満たすため、行の作成は特定のレコード定義に依存しない。
 
@@ -326,14 +326,14 @@ export async function deriveRkey(s: string, p: string[]): Promise<string>
 export async function deriveUnit(s: string, p: string[]): Promise<number>
 ```
 
-| 関数または項目                        | 内容                                                                                                                                     |
-| ------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| deriveRkey                            | HMAC-SHA-256(secret, parts を縦棒でつないだ文字列) の先頭 16 バイトを 22 文字の base64url にする                                         |
-| enrollmentKey(secret, taskUri)        | deriveRkey(secret, [enrollment, taskUri])                                                                                                |
-| checkinKey(secret, enrollmentRkey, i) | deriveRkey(secret, [checkin, enrollmentRkey, i.day, i.window, i.kind])。day は日本時間の YYYYMMDD、結果確認の window は 0                |
-| 秘密値                                | シークレット RKEY_SECRET。知らない者はキーを推測できず、確認用リンクの識別子も推測されない                                               |
-| 二重作成                              | putRecord に swapRecord の null を付けて作る。同じキーの 2 回目以降は InvalidSwap で拒否される。受領証は対応する確認依頼と同じキーを使う |
-| deriveUnit(secret, parts)             | HMAC の先頭 6 バイトを 2 の 48 乗で割った 0 以上 1 未満の値。保存せずに同じ乱数を再現する                                                |
+| 関数または項目                        | 内容                                                                                                                                                                                                                            |
+| ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| deriveRkey                            | HMAC-SHA-256(secret, parts を縦棒でつないだ文字列) の先頭 16 バイトを 22 文字の base64url にする                                                                                                                                |
+| enrollmentKey(secret, taskUri)        | deriveRkey(secret, [enrollment, taskUri])                                                                                                                                                                                       |
+| checkinKey(secret, enrollmentRkey, i) | deriveRkey(secret, [checkin, enrollmentRkey, i.day, i.window, i.kind])。day は日本時間の YYYYMMDD、結果確認の window は 0                                                                                                       |
+| 秘密値                                | シークレット RKEY_SECRET。知らない者はキーを推測できず、確認用リンクの識別子も推測されない                                                                                                                                      |
+| 二重作成                              | putRecordOnce(agent, collection, rkey, record) が putRecord に swapRecord の null を付けて作る。同じキーの 2 回目以降は InvalidSwap で拒否され、既存を取得して created を偽にして返す。受領証は対応する確認依頼と同じキーを使う |
+| deriveUnit(secret, parts)             | HMAC の先頭 6 バイトを 2 の 48 乗で割った 0 以上 1 未満の値。保存せずに同じ乱数を再現する                                                                                                                                       |
 
 ### D-12: D1 のスキーマ (FR-8)
 
@@ -375,12 +375,12 @@ export async function setLabel(session) // 既存のプロフィールの項目�
 
 ## 4. エラー処理
 
-| 事象                       | 処理                                            |
-| -------------------------- | ----------------------------------------------- |
-| 定期実行の処理が例外       | 失敗として記録し、後続の処理を続ける            |
-| システムオプションが範囲外 | 既定値を使い、警告を記録する                    |
-| DID の解決に失敗           | 例外を投げ、呼び出し側が再試行可否を判断する    |
-| CID が一致しない           | ok を false にして返す（例外にしない）          |
-| Bot の認証に失敗           | 例外を投げ、定期実行に失敗として記録させる      |
-| 保存先の操作が失敗         | 例外を投げ、API は retryable を true にして返す |
-| 移行の検証が不一致         | 不一致の集合と件数を出力し、終了コード 1 で終了 |
+| 事象                       | 処理                                                                                            |
+| -------------------------- | ----------------------------------------------------------------------------------------------- |
+| 定期実行の処理が例外       | 失敗として記録し、後続の処理を続ける                                                            |
+| システムオプションが範囲外 | 既定値を使い、警告を記録する                                                                    |
+| DID の解決に失敗           | 例外を投げ、呼び出し側が再試行可否を判断する                                                    |
+| CID が一致しない           | ok を false にして返す（例外にしない）。レコードが存在しないときは RecordNotFoundError を投げる |
+| Bot の認証に失敗           | 例外を投げ、定期実行に失敗として記録させる                                                      |
+| 保存先の操作が失敗         | 例外を投げ、API は retryable を true にして返す                                                 |
+| 移行の検証が不一致         | 不一致の集合と件数を出力し、終了コード 1 で終了                                                 |

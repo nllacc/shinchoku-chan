@@ -29,10 +29,10 @@
 ## Phase 4: PDS・Bot・行の作成
 
 - 対応: D-5, D-6, D-10
-- [ ] T-4.1: `src/platform/pds.ts` に DID の解決と公開レコードの取得を実装する。
-- [ ] T-4.2: CID の再計算と照合を実装し、実 PDS のレコードと改変したレコードでテストする。
-- [ ] T-4.3: `src/platform/botSession.ts` にセッションの再利用と更新を実装する。
-- [ ] T-4.4: `src/platform/rows.ts` にレコードから行を作る関数を実装し、同じレコードから同じ行ができることをテストする。
+- [x] T-4.1: `src/platform/pds.ts` に DID の解決と公開レコードの取得を実装する。
+- [x] T-4.2: CID の再計算と照合を実装し、実 PDS のレコードと改変したレコードでテストする。
+- [x] T-4.3: `src/platform/botSession.ts` にセッションの再利用と更新を実装する。
+- [x] T-4.4: `src/platform/rows.ts` にレコードから行を作る関数を実装し、同じレコードから同じ行ができることをテストする。
 - 検証: `npx vitest run tests/platform/pds.test.ts tests/platform/botSession.test.ts tests/platform/rows.test.ts`
 
 ## Phase 5: 運用スクリプト
