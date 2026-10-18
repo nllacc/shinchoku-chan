@@ -14,9 +14,9 @@
 ## Phase 2: 定期実行とオプション
 
 - 対応: D-2, D-3
-- [ ] T-2.1: `src/worker/tick.ts` に処理の登録と順次実行を実装する。
-- [ ] T-2.2: `src/platform/options.ts` に既定値・環境変数の読み出し・検証を実装する。
-- [ ] T-2.3: 処理が空の定期実行の CPU 時間と読み取り行数を測るテストを追加する。
+- [x] T-2.1: `src/worker/tick.ts` に処理の登録と順次実行を実装する。
+- [x] T-2.2: `src/platform/options.ts` に既定値・環境変数の読み出し・検証を実装する。
+- [x] T-2.3: 処理が空の定期実行の CPU 時間と読み取り行数を測るテストを追加する。
 - 検証: `npx vitest run tests/platform/tick.test.ts tests/platform/options.test.ts`
 
 ## Phase 3: 資格・キー

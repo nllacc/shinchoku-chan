@@ -157,9 +157,9 @@ export function loadOptions(env: Env): typeof DEFAULT_OPTIONS
 | DEFAULT_OPTIONS の項目                                                            | 既定値と範囲                                                                                 |
 | --------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
 | triggersPerDay、maxUsersPerTrigger、checkinWindowMinutes                          | 8（1〜24）、5（1〜50）、30（5〜120）                                                         |
-| penaltyPerMissingHundredths、penaltyCapHundredths                                 | 200、1000                                                                                    |
-| freeWindowRange、premiumWindowRange                                               | [480, 1200]、[360, 1380]                                                                     |
-| maxWindows、maxDailyTarget、recheckIntervalHours、priorityWeightPerMissedDay      | 3、3、24、1                                                                                  |
+| penaltyPerMissingHundredths、penaltyCapHundredths                                 | 200（0〜10000）、1000（0〜10000）                                                            |
+| freeWindowRange、premiumWindowRange                                               | [480, 1200]、[360, 1380]（「最小,最大」で 0 以上 1440 以下、最小が最大より小さい）           |
+| maxWindows、maxDailyTarget、recheckIntervalHours、priorityWeightPerMissedDay      | 3（0〜10）、3（1〜10）、24（1〜168）、1（0〜10）                                             |
 | warmupDays、replyGapMinSeconds、replyGapMaxSeconds、cheerMinReplies、cheerEnabled | 30（1〜90）、5（0〜60）、30（replyGapMinSeconds 以上 120 以下）、2（2〜50）、1（0 または 1） |
 
 | 規則       | 内容                                                                                                   |
