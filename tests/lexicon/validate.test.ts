@@ -78,6 +78,16 @@ describe("構造検証", () => {
   })
 })
 
+describe("画像の参照", () => {
+  const blob = { $type: "blob", ref: { $link: "bafkreigh2akiscaildcqabsyg3dfr6chu3fgpregiymsck7e7aqa4s52zy" }, mimeType: "image/png", size: 10 }
+
+  test("lexicon/AC-2: JSON 表現の開始前画像を持つ作業は成功する(許可されない形式・大きすぎる画像は失敗する)", () => {
+    expect(validateRecord(NSID.task, { ...task(), startImage: blob })).toEqual({ ok: true })
+    expect(validateRecord(NSID.task, { ...task(), startImage: { ...blob, mimeType: "image/gif" } }).ok).toBe(false)
+    expect(validateRecord(NSID.task, { ...task(), startImage: { ...blob, size: 2_000_000 } }).ok).toBe(false)
+  })
+})
+
 describe("作業名の規則", () => {
   const titleReasons = (title: string) => reasons(validateRecord(NSID.task, task({ title })))
 

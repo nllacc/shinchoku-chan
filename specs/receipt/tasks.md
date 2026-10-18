@@ -13,9 +13,9 @@
 ## Phase 2: 報告の受理
 
 - 対応: D-5
-- [ ] T-2.1: `src/receipt/submit.ts` に手順 1〜10 を実装する。
-- [ ] T-2.2: 期限・参照・証跡画像・二重受理の各拒否を、受け入れ条件のタグ付きで単体テストにする。
-- [ ] T-2.3: CPU 時間と外部通信の回数を測るテストと、ローカルの PDS での通しのテストを追加する。
+- [x] T-2.1: `src/receipt/submit.ts` に手順 1〜10 を実装する。
+- [x] T-2.2: 期限・参照・証跡画像・二重受理の各拒否を、受け入れ条件のタグ付きで単体テストにする。
+- [x] T-2.3: CPU 時間と外部通信の回数を測るテストと、模擬の PDS と API 経路での通しのテストを追加する。
 - 検証: `npx vitest run tests/receipt/submit.test.ts tests/receipt/perf.test.ts tests/receipt/integration.test.ts`
 
 ## Phase 3: 期限切れと再確認
