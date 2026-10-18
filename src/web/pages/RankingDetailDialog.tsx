@@ -57,7 +57,7 @@ export function RankingDetailDialog({ taskId, onClose }: { taskId: string; onClo
           <dl className={styles.list}>
             <dt>ユーザー名</dt>
             <dd>
-              <a href={d.profileUrl} target="_blank" rel="noopener noreferrer">
+              <a className={styles.link} href={d.profileUrl} target="_blank" rel="noopener noreferrer">
                 {d.handle}
               </a>
             </dd>

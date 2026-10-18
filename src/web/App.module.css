@@ -28,5 +28,18 @@
 }
 
 .theme {
+  min-height: var(--field-height);
+  padding: var(--field-padding);
+  border: var(--field-border-width) solid var(--field-border-color);
+  border-radius: var(--field-radius);
+  background: var(--field-bg);
+  color: var(--field-text);
   font: inherit;
+}
+
+.theme:focus-visible,
+.link:focus-visible,
+.brand:focus-visible {
+  outline: var(--focus-width) solid var(--focus-color);
+  outline-offset: var(--focus-width);
 }

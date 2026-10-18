@@ -32,6 +32,16 @@ thead .cell {
   font: inherit;
   color: inherit;
   cursor: pointer;
+  white-space: nowrap;
+}
+
+/* 並べ替えの向きを示す */
+th[aria-sort="ascending"] .sortButton::after {
+  content: " ▲";
+}
+
+th[aria-sort="descending"] .sortButton::after {
+  content: " ▼";
 }
 
 .sortButton:focus-visible,

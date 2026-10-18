@@ -62,8 +62,12 @@
 
 .link {
   color: var(--link-color);
+  /* ハンドルは「.」の位置以外では折り返さない */
+  overflow-wrap: normal;
 }
 
-.score {
+.score,
+.nowrap {
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }

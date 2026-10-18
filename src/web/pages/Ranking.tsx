@@ -120,7 +120,7 @@ export function Ranking() {
   const columns: Column<RankingRow>[] = [
     { key: "handle", header: "ユーザー名", render: (r) => <UserLink row={r} /> },
     { key: "summary", header: "概要", render: (r) => r.summary },
-    { key: "period", header: "期間", render: (r) => formatPeriod(r.durationDays) },
+    { key: "period", header: "期間", render: (r) => <span className={styles.nowrap}>{formatPeriod(r.durationDays)}</span> },
     { key: "score", header: "評価点", sortable: true, render: (r) => <span className={styles.score}>{formatScore(r.scoreHundredths)}</span> },
     { key: "rate", header: "最終進捗度", sortable: true, render: (r) => <span className={styles.score}>{formatRate(r.finalRatePermille)}</span> },
   ]

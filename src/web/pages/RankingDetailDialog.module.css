@@ -38,3 +38,7 @@
 .state {
   color: var(--ranking-muted);
 }
+
+.link {
+  color: var(--ranking-link-color);
+}

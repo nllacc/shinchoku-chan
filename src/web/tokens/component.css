@@ -64,6 +64,7 @@
   --ranking-radius: var(--shape-radius-control);
   --ranking-image-basis: var(--size-media-basis);
   --link-color: var(--color-primary);
+  --ranking-link-color: var(--color-primary);
 
   --header-bg: var(--color-surface-raised);
   --header-border-color: var(--color-border);
