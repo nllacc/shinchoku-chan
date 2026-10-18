@@ -1,0 +1,30 @@
+{
+  "lexicon": 1,
+  "id": "com.example.shinchoku.defs",
+  "defs": {
+    "metric": {
+      "type": "object",
+      "required": ["name", "unit", "scale", "startValue", "goalValue"],
+      "properties": {
+        "name": { "type": "string", "maxGraphemes": 30, "maxLength": 150 },
+        "unit": { "type": "string", "maxGraphemes": 10, "maxLength": 50 },
+        "scale": { "type": "integer", "minimum": 0, "maximum": 3 },
+        "startValue": { "type": "integer", "minimum": -1000000000, "maximum": 1000000000 },
+        "goalValue": { "type": "integer", "minimum": -1000000000, "maximum": 1000000000 }
+      }
+    },
+    "slot": {
+      "type": "string",
+      "knownValues": ["morning", "noon", "evening"],
+      "maxLength": 20
+    },
+    "timeWindow": {
+      "type": "object",
+      "required": ["startMinute", "endMinute"],
+      "properties": {
+        "startMinute": { "type": "integer", "minimum": 0, "maximum": 1440 },
+        "endMinute": { "type": "integer", "minimum": 0, "maximum": 1440 }
+      }
+    }
+  }
+}

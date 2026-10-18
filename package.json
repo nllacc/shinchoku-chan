@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "@atproto/lex-json": "^0.1.7",
+    "@atproto/lexicon": "^0.7.17",
     "@ipld/dag-cbor": "^10.0.2",
     "multiformats": "^14.0.5"
   }

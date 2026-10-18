@@ -3,10 +3,10 @@
 ## Phase 1: 名前空間と共通定義
 
 - 対応: D-1, D-2
-- [ ] T-1.1: TypeScript・vitest・@atproto/lexicon を導入し、`tests/lexicon/` を作成する。
-- [ ] T-1.2: `src/lexicon/nsid.ts` に接頭辞とコレクション識別子を定義する。
-- [ ] T-1.3: `lexicons/` に共通定義（指標・時間帯）の JSON と `lexicons/registry.ts` を作成する。
-- [ ] T-1.4: `scripts/rename-namespace.mjs` を作成し、一括変更と公開後の中止を単体テストで確認する。
+- [x] T-1.1: TypeScript・vitest・@atproto/lexicon を導入し、`tests/lexicon/` を作成する。
+- [x] T-1.2: `src/lexicon/nsid.ts` に接頭辞とコレクション識別子を定義する。
+- [x] T-1.3: `lexicons/` に共通定義（指標・時間帯）の JSON と `lexicons/registry.ts` を作成する。
+- [x] T-1.4: `scripts/rename-namespace.mjs` を作成し、一括変更と公開後の中止を単体テストで確認する。
 - 検証: `npx vitest run tests/lexicon/nsid.test.ts tests/lexicon/rename.test.ts`
 
 ## Phase 2: ユーザー側レコード

@@ -103,9 +103,9 @@ export type CollectionNsid = (typeof NSID)[Exclude<keyof typeof NSID, "defs">]
 export function renameNamespace(root, from, to) {
   // 1. to が NSID の規則（3区間以上、各区間は英数字とハイフン）を満たすことを確認する
   // 2. lexicons.lock.json が空オブジェクトでなければ中止する（公開後は変更不可）
-  // 3. lexicons/ のディレクトリを from の階層から to の階層へ移動する
-  // 4. 各 JSON の id と ref 内の from を to へ置換する
-  // 5. nsid.ts の NSID_PREFIX の値を to へ書き換える
+  // 3. 各 JSON の id と ref 内の from を to へ置換する
+  // 4. lexicons/ のディレクトリを from の階層から to の階層へ移動する
+  // 5. registry.ts の import パスと nsid.ts の NSID_PREFIX の値を to へ書き換える
 }
 ```
 

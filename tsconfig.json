@@ -16,11 +16,13 @@
     "skipLibCheck": true,
     "noEmit": true,
     "isolatedModules": true,
-    "allowJs": true
+    "allowJs": true,
+    "resolveJsonModule": true
   },
   "include": [
     "src",
     "tests",
+    "lexicons",
     "scripts/**/*.mjs"
   ],
   "exclude": [
