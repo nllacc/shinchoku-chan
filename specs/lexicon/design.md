@@ -69,7 +69,7 @@ stateDiagram-v2
 
 ## 3. 設計項目
 
-### D-1: 名前空間と識別子 (FR-6, FR-10)
+### D-1: 名前空間と識別子 (FR-5, FR-9)
 
 ```ts
 export const NSID_PREFIX = "com.example.shinchoku"
@@ -109,7 +109,7 @@ export function renameNamespace(root, from, to) {
 }
 ```
 
-### D-2: 共通定義と列挙 (FR-2, FR-3, FR-8)
+### D-2: 共通定義と列挙 (FR-2, FR-3, FR-7)
 
 共通定義 `defs` のフィールド制約。
 
@@ -135,7 +135,7 @@ export function renameNamespace(root, from, to) {
 | durationDays が 1 のとき slot が存在しない   | slot-forbidden        |
 | durationDays が 1 以上 7 以下の整数          | duration-out-of-range |
 
-### D-3: ユーザー側レコード (FR-1, FR-4, FR-5, FR-12, NFR-2)
+### D-3: ユーザー側レコード (FR-1, FR-4, FR-11, NFR-2)
 
 3種とも key は tid。1ユーザーが同時に持てる件数をスキーマで制限しない。
 
@@ -144,6 +144,7 @@ task（作業）
 | フィールド   | 型                         | 必須 | 制約                                        |
 | ------------ | -------------------------- | ---- | ------------------------------------------- |
 | summary      | string                     | 必須 | maxGraphemes 300, maxLength 1500            |
+| title        | string                     | 必須 | minLength 1, maxGraphemes 12, maxLength 120 |
 | goal         | string                     | 必須 | maxGraphemes 200, maxLength 1000            |
 | metric       | defs#metric                | 必須 |                                             |
 | durationDays | integer                    | 必須 | 1 以上 7 以下                               |
@@ -179,11 +180,11 @@ result（結果報告）
 export type RecordOf<K extends CollectionNsid> = RecordMap[K]
 ```
 
-最大サイズの見積り: 文字列の maxLength の合計は task で 2650 バイト以下、JSON の構造を含めても 10 キロバイトを超えない。
+最大サイズの見積り: 文字列の maxLength の合計は task で 2770 バイト以下、JSON の構造を含めても 10 キロバイトを超えない。
 
-### D-4: Bot側の受理と確認依頼 (FR-6, FR-7)
+### D-4: Bot側の受理と確認依頼 (FR-5, FR-6)
 
-key は tid。Bot 側の全レコードに更新日時の項目は置かない。
+Bot 側の全レコードに更新日時の項目は置かない。enrollment・checkin・receipt の key は any とし、値は書き込み側が決める（receipt は対応する checkin と同じ key）。revocation・evaluation の key は tid とする。
 
 enrollment（受理：作業の開始時刻の確定）
 
@@ -214,7 +215,7 @@ checkin（確認依頼の発行）
 | issuedAt   | datetime                   | 必須 | 30分の起点                            |
 | expiresAt  | datetime                   | 必須 | issuedAt より後                       |
 
-### D-5: Bot側の受領証・取消・評価 (FR-6, FR-7, FR-8)
+### D-5: Bot側の受領証・取消・評価 (FR-5, FR-6, FR-7)
 
 receipt（受領証）
 
@@ -268,7 +269,6 @@ export function fromScaled(scaled: number, scale: number): number {
   return scaled / 10 ** scale
 }
 
-// 開始値からゴール値へ向かう進捗率（千分率の整数）。範囲外の値は 0 未満・1000 超になりうる
 export function progressPermille(
   range: { startValue: number; goalValue: number },
   value: number,
@@ -287,7 +287,7 @@ export function progressPermille(
 | 80         | 60        | 70    | 500  |
 | 0          | 100       | 120   | 1200 |
 
-### D-7: 検証 (FR-9, FR-8, NFR-1)
+### D-7: 検証 (FR-8, FR-12, NFR-1)
 
 ```ts
 export type ValidationIssue = { path: string; reason: string }
@@ -309,16 +309,18 @@ lexicon 定義は起動時に1回だけ読み込み、以降は再利用する�
 | 意味規則 | 識別子ごとの規則（下表）の検査                       | 1ミリ秒  |
 | 余裕     | 実行環境のばらつき                                   | 1ミリ秒  |
 
+title-unsafe は、title が改行・制御文字・半角全角の @ # / : ・英数字に挟まれた半角の . のいずれかを含むときの違反である。
+
 | 識別子     | 意味規則                                                                                                     |
 | ---------- | ------------------------------------------------------------------------------------------------------------ |
-| task       | metric-range-empty, slot-required, slot-forbidden                                                            |
+| task       | metric-range-empty, slot-required, slot-forbidden, title-unsafe                                              |
 | enrollment | endsAt が startedAt より後。windows の各要素で startMinute が endMinute より小さい                           |
 | checkin    | expiresAt が issuedAt より後。kind が progress のとき seq が存在する                                         |
 | receipt    | status が accepted のとき record と value が存在し、expired のとき存在しない。未知の status は追加の制約なし |
 | revocation | 追加の意味規則なし                                                                                           |
 | evaluation | 追加の意味規則なし                                                                                           |
 
-### D-8: 互換性検査 (FR-11)
+### D-8: 互換性検査 (FR-10)
 
 ```js
 // node scripts/check-lexicon-compat.mjs [--update]

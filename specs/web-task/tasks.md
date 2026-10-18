@@ -21,7 +21,7 @@
 ## Phase 3: 登録画面
 
 - 対応: D-3
-- [ ] T-3.1: `src/web/pages/NewTask.tsx` に入力項目と検証の表示を実装する。
+- [ ] T-3.1: `src/web/pages/NewTask.tsx` に入力項目（作業名を含む）と検証の表示を実装する。
 - [ ] T-3.2: 確定の流れと、失敗後の再開、受理依頼の結果の表示を実装する。
 - 検証: `npx vitest run tests/web/newTask.test.tsx`
 - E2E: `tests/e2e/register.spec.ts` サインインして作業を登録する → 開始時刻・終了時刻・通知時間帯が表示され、PDS に作業レコードがある

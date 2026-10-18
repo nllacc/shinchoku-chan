@@ -12,7 +12,7 @@
 ## Phase 2: ユーザー側レコード
 
 - 対応: D-3
-- [ ] T-2.1: 作業・進捗報告・結果報告の lexicon JSON を `lexicons/` に作成する。
+- [ ] T-2.1: 作業（作業名を含む）・進捗報告・結果報告の lexicon JSON を `lexicons/` に作成する。
 - [ ] T-2.2: `src/lexicon/types.ts` にユーザー側3種の型を定義する。
 - [ ] T-2.3: 上限長で埋めたレコードのサイズ上限テストを、受け入れ条件のタグ付きで追加する。
 - 検証: `npx vitest run tests/lexicon/userRecords.test.ts`
@@ -31,7 +31,7 @@
 - 対応: D-6, D-7
 - [ ] T-4.1: `src/lexicon/numeric.ts` を実装し、表の3例を単体テストにする。
 - [ ] T-4.2: `src/lexicon/validate.ts` の構造検証を実装する。
-- [ ] T-4.3: 識別子ごとの意味規則を実装し、理由コードごとにテストする。
+- [ ] T-4.3: 識別子ごとの意味規則（作業名の規則を含む）を実装し、理由コードごとにテストする。
 - [ ] T-4.4: 上限長の作業レコードを1000回検証する性能テストを追加する。
 - 検証: `npx vitest run tests/lexicon/numeric.test.ts tests/lexicon/validate.test.ts tests/lexicon/perf.test.ts`
 
