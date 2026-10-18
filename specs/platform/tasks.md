@@ -22,8 +22,8 @@
 ## Phase 3: 資格・キー
 
 - 対応: D-7, D-11
-- [ ] T-3.1: `src/platform/entitlement.ts` に資格の読み出しと無料フラグを実装する。
-- [ ] T-3.2: `src/platform/rkey.ts` にキーの導出を実装し、同じ入力で同じ値になることをテストする。
+- [x] T-3.1: `src/platform/entitlement.ts` に資格の読み出しと無料フラグを実装する。
+- [x] T-3.2: `src/platform/rkey.ts` にキーの導出を実装し、同じ入力で同じ値になることをテストする。
 - 検証: `npx vitest run tests/platform/entitlement.test.ts tests/platform/rkey.test.ts`
 
 ## Phase 4: PDS・Bot・行の作成
