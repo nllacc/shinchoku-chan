@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "predev": "node scripts/free-port.mjs 8787 && mkdir -p dist/web",
+    "predev": "node scripts/free-port.mjs 8787 && vite build",
     "dev": "wrangler dev --ip 0.0.0.0 --port 8787",
     "typecheck": "tsc && tsc -p tsconfig.web.json",
     "test": "CLOUDFLARE_LOAD_DEV_VARS_FROM_DOT_ENV=false vitest run",
