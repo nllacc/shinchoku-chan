@@ -38,7 +38,7 @@
 ## Phase 5: 互換性検査
 
 - 対応: D-8
-- [ ] T-5.1: `scripts/check-lexicon-compat.mjs` に比較処理を実装する。
-- [ ] T-5.2: `--update` でスナップショットを書き出し、`lexicons.lock.json` を生成する。
-- [ ] T-5.3: 許容する変更と違反する変更の全種類を単体テストにする。
+- [x] T-5.1: `scripts/check-lexicon-compat.mjs` に比較処理を実装する。
+- [x] T-5.2: `--update` でスナップショットを書き出し、`lexicons.lock.json` を生成する。
+- [x] T-5.3: 許容する変更と違反する変更の全種類を単体テストにする。
 - 検証: `npx vitest run tests/lexicon/compat.test.ts`

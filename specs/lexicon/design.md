@@ -330,17 +330,17 @@ export function compareLexicon(published, current) {
 }
 ```
 
-| 変更                           | 判定 | kind                 |
-| ------------------------------ | ---- | -------------------- |
-| 任意プロパティの追加           | 許容 |                      |
-| 文字数や値の上限の引き上げ     | 許容 |                      |
-| knownValues への値の追加       | 許容 |                      |
-| プロパティの削除               | 違反 | property-removed     |
-| 必須の追加・削除               | 違反 | required-changed     |
-| 型・ref の変更                 | 違反 | type-changed         |
-| 上限の引き下げ・下限の引き上げ | 違反 | constraint-tightened |
+| 変更                                                             | 判定 | kind                 |
+| ---------------------------------------------------------------- | ---- | -------------------- |
+| 任意プロパティの追加                                             | 許容 |                      |
+| 文字数や値の上限の引き上げ                                       | 許容 |                      |
+| knownValues への値の追加                                         | 許容 |                      |
+| プロパティの削除                                                 | 違反 | property-removed     |
+| 必須の追加・削除                                                 | 違反 | required-changed     |
+| 型・ref の変更                                                   | 違反 | type-changed         |
+| 上限の引き下げ・下限の引き上げ・knownValues と accept の値の削除 | 違反 | constraint-tightened |
 
-`--update` はスナップショットを現在の lexicons で上書きする。公開前は空オブジェクトとして互換とみなす。
+スナップショットは record と defs の object 定義ごとに作る（defs の文字列のように object 以外の定義は properties の `$value` に入れる）。`--update` はスナップショットを現在の lexicons で上書きする。公開前は空オブジェクトとして互換とみなす。
 
 ## 4. エラー処理
 
