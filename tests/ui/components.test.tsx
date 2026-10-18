@@ -11,14 +11,25 @@ import { Field } from "../../src/web/ui/Field"
 import { Styleguide } from "../../src/web/ui/Styleguide"
 
 describe("基底部品", () => {
-  test("ui-foundation/AC-5: 確認用の画面に6種の基底部品が表示される", async () => {
+  test("ui-foundation/AC-5: 確認用の画面に13種の基底部品が表示される", async () => {
     render(<Styleguide />)
     expect(screen.getAllByRole("button").length).toBeGreaterThan(5)
     expect(screen.getAllByText(/達成|未達/).length).toBeGreaterThan(0) // Badge
     expect(screen.getAllByLabelText(/作業名/).length).toBeGreaterThan(0) // Field
     expect(screen.getByRole("heading", { name: "カードの見出し" })).toBeTruthy() // Card
     expect(screen.getByRole("table")).toBeTruthy() // DataTable
-    await userEvent.click(screen.getByRole("button", { name: "ダイアログを開く" }))
+    expect(screen.getByRole("combobox", { name: "並び順" })).toBeTruthy() // Select
+    expect(
+      screen.getByRole("link", { name: "外部のリンク" }).getAttribute("rel"),
+    ).toContain("noopener") // Link
+    expect(screen.getAllByRole("alert").length).toBeGreaterThan(0) // Notice
+    expect(screen.getAllByLabelText("読み込み中").length).toBeGreaterThan(0) // Skeleton
+    expect(screen.getByText("ゴール").tagName).toBe("DT") // DescriptionList
+    expect(screen.getByAltText("見本の画像")).toBeTruthy() // Figure
+    expect(screen.getByRole("banner")).toBeTruthy() // Header
+    await userEvent.click(
+      screen.getByRole("button", { name: "ダイアログを開く" }),
+    )
     expect(screen.getByRole("dialog")).toBeTruthy() // Dialog
   })
 
@@ -26,15 +37,21 @@ describe("基底部品", () => {
     const onClick = vi.fn()
     render(
       <>
-        <Button disabled onClick={onClick}>無効</Button>
-        <Button busy onClick={onClick}>処理中</Button>
+        <Button disabled onClick={onClick}>
+          無効
+        </Button>
+        <Button busy onClick={onClick}>
+          処理中
+        </Button>
         <Button onClick={onClick}>通常</Button>
       </>,
     )
     await userEvent.click(screen.getByRole("button", { name: "無効" }))
     await userEvent.click(screen.getByRole("button", { name: "処理中" }))
     expect(onClick).not.toHaveBeenCalled()
-    expect(screen.getByRole("button", { name: "処理中" }).getAttribute("aria-busy")).toBe("true")
+    expect(
+      screen.getByRole("button", { name: "処理中" }).getAttribute("aria-busy"),
+    ).toBe("true")
     await userEvent.click(screen.getByRole("button", { name: "通常" }))
     expect(onClick).toHaveBeenCalledTimes(1)
   })
@@ -43,13 +60,22 @@ describe("基底部品", () => {
     render(<Field label="作業名" hint="12文字まで" error="必須です" />)
     const input = screen.getByLabelText("作業名")
     const ids = input.getAttribute("aria-describedby")!.split(" ")
-    expect(ids.map((i) => document.getElementById(i)?.textContent)).toEqual(["12文字まで", "必須です"])
+    expect(ids.map((i) => document.getElementById(i)?.textContent)).toEqual([
+      "12文字まで",
+      "必須です",
+    ])
     expect(input.getAttribute("aria-invalid")).toBe("true")
   })
 
   test("Card: 見出しの階層を指定でき、差し込み口に要素を渡せる", () => {
-    render(<Card heading="見出し" level={3} actions={<button>操作</button>}>本文</Card>)
-    expect(screen.getByRole("heading", { level: 3, name: "見出し" })).toBeTruthy()
+    render(
+      <Card heading="見出し" level={3} actions={<button>操作</button>}>
+        本文
+      </Card>,
+    )
+    expect(
+      screen.getByRole("heading", { level: 3, name: "見出し" }),
+    ).toBeTruthy()
     expect(screen.getByRole("button", { name: "操作" })).toBeTruthy()
   })
 
@@ -64,7 +90,14 @@ describe("基底部品", () => {
     render(
       <DataTable
         caption="表"
-        columns={[{ key: "n", header: "数", sortable: true, render: (r: { n: number }) => r.n }]}
+        columns={[
+          {
+            key: "n",
+            header: "数",
+            sortable: true,
+            render: (r: { n: number }) => r.n,
+          },
+        ]}
         rows={[{ n: 1 }, { n: 2 }]}
         rowKey={(r) => String(r.n)}
         sort={{ key: "n", direction: "asc" }}
@@ -72,7 +105,11 @@ describe("基底部品", () => {
         onRowActivate={onRow}
       />,
     )
-    expect(screen.getByRole("columnheader", { name: "数" }).getAttribute("aria-sort")).toBe("ascending")
+    expect(
+      screen
+        .getByRole("columnheader", { name: "数" })
+        .getAttribute("aria-sort"),
+    ).toBe("ascending")
     await userEvent.click(screen.getByRole("button", { name: "数" }))
     expect(onSort).toHaveBeenCalledWith({ key: "n", direction: "desc" })
     const rows = screen.getAllByRole("row")
@@ -82,7 +119,14 @@ describe("基底部品", () => {
   })
 
   test("DataTable: 行がなければ空の表示", () => {
-    render(<DataTable caption="表" columns={[{ key: "n", header: "数", render: () => null }]} rows={[]} rowKey={() => ""} />)
+    render(
+      <DataTable
+        caption="表"
+        columns={[{ key: "n", header: "数", render: () => null }]}
+        rows={[]}
+        rowKey={() => ""}
+      />,
+    )
     expect(screen.getByText("データがありません")).toBeTruthy()
   })
 })
@@ -92,7 +136,13 @@ function Harness({ busy = false }: { busy?: boolean }) {
   return (
     <>
       <button onClick={() => setOpen(true)}>開く</button>
-      <Dialog open={open} title="確認" onClose={() => setOpen(false)} busy={busy} actions={<button onClick={() => setOpen(false)}>閉じる</button>}>
+      <Dialog
+        open={open}
+        title="確認"
+        onClose={() => setOpen(false)}
+        busy={busy}
+        actions={<button onClick={() => setOpen(false)}>閉じる</button>}
+      >
         <input aria-label="内容" />
       </Dialog>
     </>

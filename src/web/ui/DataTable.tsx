@@ -1,5 +1,6 @@
 import type { KeyboardEvent, ReactNode } from "react"
 import styles from "./DataTable.module.css"
+import { useSlot } from "./UiProvider"
 
 export type Column<T> = {
   key: string
@@ -23,8 +24,24 @@ export type DataTableProps<T> = {
   empty?: ReactNode
 }
 
-export function DataTable<T>({ caption, columns, rows, rowKey, sort, onSortChange, onRowActivate, empty }: DataTableProps<T>) {
-  const ariaSort = (c: Column<T>) => (sort?.key === c.key ? (sort.direction === "asc" ? "ascending" : "descending") : c.sortable ? "none" : undefined)
+export function BaseDataTable<T>({
+  caption,
+  columns,
+  rows,
+  rowKey,
+  sort,
+  onSortChange,
+  onRowActivate,
+  empty,
+}: DataTableProps<T>) {
+  const ariaSort = (c: Column<T>) =>
+    sort?.key === c.key
+      ? sort.direction === "asc"
+        ? "ascending"
+        : "descending"
+      : c.sortable
+        ? "none"
+        : undefined
   const keyActivate = (row: T) => (e: KeyboardEvent) => {
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault()
@@ -38,12 +55,25 @@ export function DataTable<T>({ caption, columns, rows, rowKey, sort, onSortChang
         <thead>
           <tr>
             {columns.map((c) => (
-              <th key={c.key} scope="col" aria-sort={ariaSort(c)} className={styles.cell}>
+              <th
+                key={c.key}
+                scope="col"
+                aria-sort={ariaSort(c)}
+                className={styles.cell}
+              >
                 {c.sortable && onSortChange ? (
                   <button
                     type="button"
                     className={styles.sortButton}
-                    onClick={() => onSortChange({ key: c.key, direction: sort?.key === c.key && sort.direction === "desc" ? "asc" : "desc" })}
+                    onClick={() =>
+                      onSortChange({
+                        key: c.key,
+                        direction:
+                          sort?.key === c.key && sort.direction === "desc"
+                            ? "asc"
+                            : "desc",
+                      })
+                    }
                   >
                     {c.header}
                   </button>
@@ -81,4 +111,13 @@ export function DataTable<T>({ caption, columns, rows, rowKey, sort, onSortChang
       </table>
     </div>
   )
+}
+
+export function DataTable<T>(props: DataTableProps<T>) {
+  // 差し替えの型は行の型に依存しないため、ここで行の型を戻す
+  const Impl = useSlot(
+    "DataTable",
+    BaseDataTable as never,
+  ) as unknown as typeof BaseDataTable<T>
+  return <Impl {...props} />
 }

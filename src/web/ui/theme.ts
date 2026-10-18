@@ -21,7 +21,8 @@ export function initTheme(): Theme {
     // 読めない環境では環境設定に従う
   }
   const theme: Theme = saved === "light" || saved === "dark" ? saved : "system"
-  if (theme !== "system") document.documentElement.setAttribute("data-theme", theme)
+  if (theme !== "system")
+    document.documentElement.setAttribute("data-theme", theme)
   return theme
 }
 

@@ -17,4 +17,5 @@ export function formatDateTime(ms: number): string {
 }
 
 // 0 時からの分を「HH:mm」で表す
-export const formatMinute = (m: number): string => `${String(Math.floor(m / 60)).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`
+export const formatMinute = (m: number): string =>
+  `${String(Math.floor(m / 60)).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`

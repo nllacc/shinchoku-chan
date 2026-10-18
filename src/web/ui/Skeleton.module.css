@@ -1,0 +1,6 @@
+.line {
+  height: var(--skeleton-height);
+  margin-bottom: var(--skeleton-gap);
+  border-radius: var(--skeleton-radius);
+  background: var(--skeleton-bg);
+}

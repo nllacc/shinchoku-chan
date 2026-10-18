@@ -1,12 +1,22 @@
-import { useCallback, useEffect, useRef, useState, type ChangeEvent } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { ApiError } from "../lib/apiError"
 import { formatPeriod, formatRate, formatScore } from "../lib/format"
 import { navigate, useLocation } from "../lib/nav"
-import { fetchRanking, parseSort, type RankingRow, type SortKey, type SortState } from "../lib/rankingApi"
+import {
+  fetchRanking,
+  parseSort,
+  type RankingRow,
+  type SortKey,
+  type SortState,
+} from "../lib/rankingApi"
 import { Badge } from "../ui/Badge"
 import { Button } from "../ui/Button"
 import { Card } from "../ui/Card"
 import { DataTable, type Column } from "../ui/DataTable"
+import { Link } from "../ui/Link"
+import { Notice } from "../ui/Notice"
+import { Select } from "../ui/Select"
+import { Skeleton } from "../ui/Skeleton"
 import styles from "./Ranking.module.css"
 import { RankingDetailDialog } from "./RankingDetailDialog"
 
@@ -18,10 +28,26 @@ type View =
   | { status: "failed"; error: ApiError; rows: RankingRow[]; next?: string }
 
 const SORT_OPTIONS: { value: string; label: string; state: SortState }[] = [
-  { value: "score-desc", label: "評価点が高い順", state: { sort: "score", order: "desc" } },
-  { value: "score-asc", label: "評価点が低い順", state: { sort: "score", order: "asc" } },
-  { value: "rate-desc", label: "最終進捗度が高い順", state: { sort: "rate", order: "desc" } },
-  { value: "rate-asc", label: "最終進捗度が低い順", state: { sort: "rate", order: "asc" } },
+  {
+    value: "score-desc",
+    label: "評価点が高い順",
+    state: { sort: "score", order: "desc" },
+  },
+  {
+    value: "score-asc",
+    label: "評価点が低い順",
+    state: { sort: "score", order: "asc" },
+  },
+  {
+    value: "rate-desc",
+    label: "最終進捗度が高い順",
+    state: { sort: "rate", order: "desc" },
+  },
+  {
+    value: "rate-asc",
+    label: "最終進捗度が低い順",
+    state: { sort: "rate", order: "asc" },
+  },
 ]
 
 // 画面幅が 480 ピクセル以下かどうか
@@ -45,16 +71,9 @@ const mergeRows = (a: RankingRow[], b: RankingRow[]) => {
 function UserLink({ row }: { row: RankingRow }) {
   // ユーザー名のリンクは行の選択(詳細の表示)とは独立に動く
   return (
-    <a
-      className={styles.link}
-      href={row.profileUrl}
-      target="_blank"
-      rel="noopener noreferrer"
-      onClick={(e) => e.stopPropagation()}
-      onKeyDown={(e) => e.stopPropagation()}
-    >
+    <Link href={row.profileUrl} external>
       {row.handle}
-    </a>
+    </Link>
   )
 }
 
@@ -79,7 +98,11 @@ export function Ranking() {
     try {
       const r = await fetchRanking(s)
       if (id !== request.current) return
-      setView(r.rows.length === 0 ? { status: "empty" } : { status: "ready", rows: r.rows, next: r.next })
+      setView(
+        r.rows.length === 0
+          ? { status: "empty" }
+          : { status: "ready", rows: r.rows, next: r.next },
+      )
     } catch (e) {
       if (id !== request.current) return
       setView({ status: "failed", error: toApiError(e), rows: [] })
@@ -100,10 +123,19 @@ export function Ranking() {
     try {
       const r = await fetchRanking({ ...sort, cursor: current.next })
       if (id !== request.current) return
-      setView({ status: "ready", rows: mergeRows(current.rows, r.rows), next: r.next })
+      setView({
+        status: "ready",
+        rows: mergeRows(current.rows, r.rows),
+        next: r.next,
+      })
     } catch (e) {
       if (id !== request.current) return
-      setView({ status: "failed", error: toApiError(e), rows: current.rows, next: current.next })
+      setView({
+        status: "failed",
+        error: toApiError(e),
+        rows: current.rows,
+        next: current.next,
+      })
     }
   }
 
@@ -113,16 +145,41 @@ export function Ranking() {
       p.set("order", s.order)
     })
 
-  const openDetail = (taskId: string) => setParams((p) => p.set("detail", taskId))
+  const openDetail = (taskId: string) =>
+    setParams((p) => p.set("detail", taskId))
   const closeDetail = () => setParams((p) => p.delete("detail"))
 
   const rows = "rows" in view ? view.rows : []
   const columns: Column<RankingRow>[] = [
-    { key: "handle", header: "ユーザー名", render: (r) => <UserLink row={r} /> },
+    {
+      key: "handle",
+      header: "ユーザー名",
+      render: (r) => <UserLink row={r} />,
+    },
     { key: "summary", header: "概要", render: (r) => r.summary },
-    { key: "period", header: "期間", render: (r) => <span className={styles.nowrap}>{formatPeriod(r.durationDays)}</span> },
-    { key: "score", header: "評価点", sortable: true, render: (r) => <span className={styles.score}>{formatScore(r.scoreHundredths)}</span> },
-    { key: "rate", header: "最終進捗度", sortable: true, render: (r) => <span className={styles.score}>{formatRate(r.finalRatePermille)}</span> },
+    {
+      key: "period",
+      header: "期間",
+      render: (r) => (
+        <span className={styles.score}>{formatPeriod(r.durationDays)}</span>
+      ),
+    },
+    {
+      key: "score",
+      header: "評価点",
+      sortable: true,
+      render: (r) => (
+        <span className={styles.score}>{formatScore(r.scoreHundredths)}</span>
+      ),
+    },
+    {
+      key: "rate",
+      header: "最終進捗度",
+      sortable: true,
+      render: (r) => (
+        <span className={styles.score}>{formatRate(r.finalRatePermille)}</span>
+      ),
+    },
   ]
 
   return (
@@ -131,40 +188,39 @@ export function Ranking() {
 
       {narrow && (
         <div className={styles.toolbar}>
-          <label>
-            並べ替え{" "}
-            <select
-              className={styles.select}
-              value={`${sort.sort}-${sort.order}`}
-              onChange={(e: ChangeEvent<HTMLSelectElement>) => changeSort(SORT_OPTIONS.find((o) => o.value === e.target.value)!.state)}
-            >
-              {SORT_OPTIONS.map((o) => (
-                <option key={o.value} value={o.value}>
-                  {o.label}
-                </option>
-              ))}
-            </select>
-          </label>
+          <Select
+            label="並べ替え"
+            options={SORT_OPTIONS.map((o) => ({
+              value: o.value,
+              label: o.label,
+            }))}
+            value={`${sort.sort}-${sort.order}`}
+            onChange={(v) =>
+              changeSort(SORT_OPTIONS.find((o) => o.value === v)!.state)
+            }
+          />
         </div>
       )}
 
-      {view.status === "loading" && (
-        <div aria-busy="true" aria-label="読み込み中">
-          {[0, 1, 2, 3].map((i) => (
-            <div key={i} className={styles.skeleton} />
-          ))}
-        </div>
-      )}
+      {view.status === "loading" && <Skeleton />}
 
       {view.status === "empty" && (
-        <p className={styles.state}>まだランキングに載った作業はありません。最初の作業を始めてみましょう。</p>
+        <Notice>
+          まだランキングに載った作業はありません。最初の作業を始めてみましょう。
+        </Notice>
       )}
 
       {view.status === "failed" && view.rows.length === 0 && (
-        <div className={styles.state} role="alert">
-          <p>{view.error.message}</p>
-          {view.error.retryable && <Button onClick={() => void load(sort)}>再試行</Button>}
-        </div>
+        <Notice
+          tone="error"
+          actions={
+            view.error.retryable ? (
+              <Button onClick={() => void load(sort)}>再試行</Button>
+            ) : undefined
+          }
+        >
+          {view.error.message}
+        </Notice>
       )}
 
       {rows.length > 0 &&
@@ -172,7 +228,18 @@ export function Ranking() {
           <ul className={styles.cards}>
             {rows.map((r) => (
               <li key={r.taskId}>
-                <Card heading={<UserLink row={r} />} level={2} actions={<Button kind="secondary" onClick={() => openDetail(r.taskId)}>詳細</Button>}>
+                <Card
+                  heading={<UserLink row={r} />}
+                  level={2}
+                  actions={
+                    <Button
+                      kind="secondary"
+                      onClick={() => openDetail(r.taskId)}
+                    >
+                      詳細
+                    </Button>
+                  }
+                >
                   <p>{r.summary}</p>
                   <p className={styles.meta}>
                     <span>{formatPeriod(r.durationDays)}</span>
@@ -190,30 +257,44 @@ export function Ranking() {
             rows={rows}
             rowKey={(r) => r.taskId}
             sort={{ key: sort.sort, direction: sort.order }}
-            onSortChange={(next) => changeSort({ sort: next.key as SortKey, order: next.direction })}
+            onSortChange={(next) =>
+              changeSort({ sort: next.key as SortKey, order: next.direction })
+            }
             onRowActivate={(r) => openDetail(r.taskId)}
           />
         ))}
 
       {view.status === "failed" && view.rows.length > 0 && (
-        <div className={styles.state} role="alert">
-          <p>続きを取得できませんでした。{view.error.message}</p>
-        </div>
+        <Notice tone="error">
+          続きを取得できませんでした。{view.error.message}
+        </Notice>
       )}
 
-      {(view.status === "ready" || view.status === "more" || view.status === "failed") && view.next && rows.length > 0 && (
-        <div className={styles.more}>
-          <Button kind="secondary" busy={view.status === "more"} onClick={() => void loadMore()}>
-            {view.status === "failed" ? "再試行" : "さらに表示"}
-          </Button>
-        </div>
-      )}
+      {(view.status === "ready" ||
+        view.status === "more" ||
+        view.status === "failed") &&
+        view.next &&
+        rows.length > 0 && (
+          <div className={styles.more}>
+            <Button
+              kind="secondary"
+              busy={view.status === "more"}
+              onClick={() => void loadMore()}
+            >
+              {view.status === "failed" ? "再試行" : "さらに表示"}
+            </Button>
+          </div>
+        )}
 
-      {detailId && <RankingDetailDialog taskId={detailId} onClose={closeDetail} />}
+      {detailId && (
+        <RankingDetailDialog taskId={detailId} onClose={closeDetail} />
+      )}
     </main>
   )
 }
 
 function toApiError(e: unknown): ApiError {
-  return e instanceof ApiError ? e : new ApiError(0, "unknown", "エラーが発生しました", true)
+  return e instanceof ApiError
+    ? e
+    : new ApiError(0, "unknown", "エラーが発生しました", true)
 }

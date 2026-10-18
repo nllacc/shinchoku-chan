@@ -1,56 +1,64 @@
-import { lazy, Suspense, type ChangeEvent } from "react"
+import { lazy, Suspense, useState } from "react"
 import { useAuth } from "./auth/AuthProvider"
 import { linkClick, useLocation } from "./lib/nav"
 import { Ranking } from "./pages/Ranking"
 import { Button } from "./ui/Button"
+import { Header } from "./ui/Header"
+import { Link } from "./ui/Link"
+import { Select } from "./ui/Select"
 import { getTheme, setTheme, type Theme } from "./ui/theme"
-import styles from "./App.module.css"
 
 // ランキング以外の画面は、開かれたときに読み込む
 const NewTask = lazy(() => import("./pages/NewTask"))
 const Checkin = lazy(() => import("./pages/Checkin"))
 const OAuthCallback = lazy(() => import("./pages/OAuthCallback"))
 
-function Header() {
+const THEME_OPTIONS = [
+  { value: "system", label: "環境設定" },
+  { value: "light", label: "明" },
+  { value: "dark", label: "暗" },
+]
+
+function AppHeader() {
   const auth = useAuth()
+  const [theme, setThemeState] = useState<Theme>(getTheme())
   return (
-    <header className={styles.header}>
-      <a className={styles.brand} href="/" onClick={linkClick("/")}>
-        進捗ちゃん
-      </a>
-      <nav className={styles.nav} aria-label="メイン">
-        <a className={styles.link} href="/" onClick={linkClick("/")}>
-          ランキング
-        </a>
-        <a className={styles.link} href="/new" onClick={linkClick("/new")}>
-          作業を始める
-        </a>
-        {auth.handle ? (
-          <>
-            <span>{auth.handle}</span>
-            <Button kind="secondary" onClick={auth.signOut}>
-              サインアウト
-            </Button>
-          </>
-        ) : (
-          <Button kind="secondary" onClick={auth.signIn}>
-            サインイン
+    <Header
+      brand={
+        <Link href="/" tone="plain" onClick={linkClick("/")}>
+          進捗ちゃん
+        </Link>
+      }
+    >
+      <Link href="/" onClick={linkClick("/")}>
+        ランキング
+      </Link>
+      <Link href="/new" onClick={linkClick("/new")}>
+        作業を始める
+      </Link>
+      {auth.handle ? (
+        <>
+          <span>{auth.handle}</span>
+          <Button kind="secondary" onClick={auth.signOut}>
+            サインアウト
           </Button>
-        )}
-        <label>
-          <span className="visually-hidden">テーマ</span>
-          <select
-            className={styles.theme}
-            defaultValue={getTheme()}
-            onChange={(e: ChangeEvent<HTMLSelectElement>) => setTheme(e.target.value as Theme)}
-          >
-            <option value="system">環境設定</option>
-            <option value="light">明</option>
-            <option value="dark">暗</option>
-          </select>
-        </label>
-      </nav>
-    </header>
+        </>
+      ) : (
+        <Button kind="secondary" onClick={auth.signIn}>
+          サインイン
+        </Button>
+      )}
+      <Select
+        label="テーマ"
+        hideLabel
+        options={THEME_OPTIONS}
+        value={theme}
+        onChange={(v) => {
+          setThemeState(v as Theme)
+          setTheme(v as Theme)
+        }}
+      />
+    </Header>
   )
 }
 
@@ -70,7 +78,7 @@ function Routes() {
 export function App() {
   return (
     <>
-      <Header />
+      <AppHeader />
       <Suspense fallback={<main className="page" aria-busy="true" />}>
         <Routes />
       </Suspense>

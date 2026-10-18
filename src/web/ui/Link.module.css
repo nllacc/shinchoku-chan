@@ -1,0 +1,19 @@
+.link {
+  /* ハンドルなどは区切り以外では折り返さない */
+  overflow-wrap: normal;
+}
+
+.default {
+  color: var(--link-color);
+  text-decoration: underline;
+}
+
+.plain {
+  color: inherit;
+  text-decoration: none;
+}
+
+.link:focus-visible {
+  outline: var(--focus-width) solid var(--focus-color);
+  outline-offset: var(--focus-width);
+}

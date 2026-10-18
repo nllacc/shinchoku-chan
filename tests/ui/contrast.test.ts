@@ -15,12 +15,17 @@ describe("コントラスト比", () => {
 
   test("ui-foundation/AC-12: 明暗両テーマの組み合わせがすべて4.5以上", () => {
     const res = checkContrast(prim, sem)
-    expect(new Set(res.map((r: any) => r.theme))).toEqual(new Set(["light", "dark"]))
+    expect(new Set(res.map((r: any) => r.theme))).toEqual(
+      new Set(["light", "dark"]),
+    )
     expect(res.filter((r: any) => !r.ok)).toEqual([])
   })
 
   test("基準未満の組み合わせは失敗として検出される", () => {
-    const bad = sem.replace("--color-muted: var(--gray-600);", "--color-muted: var(--gray-300);")
+    const bad = sem.replace(
+      "--color-muted: var(--gray-600);",
+      "--color-muted: var(--gray-300);",
+    )
     expect(checkContrast(prim, bad).some((r: any) => !r.ok)).toBe(true)
   })
 })

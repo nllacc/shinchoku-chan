@@ -20,7 +20,13 @@ export type RankingDetail = {
   title: string
   summary: string
   goal: string
-  metric: { name: string; unit: string; scale: number; startValue: number; goalValue: number }
+  metric: {
+    name: string
+    unit: string
+    scale: number
+    startValue: number
+    goalValue: number
+  }
   durationDays: number
   startedAt: number
   endsAt: number
@@ -32,16 +38,22 @@ export type RankingDetail = {
   evidenceUrl?: string
 }
 
-export function fetchRanking(q: SortState & { cursor?: string }): Promise<{ rows: RankingRow[]; next?: string }> {
+export function fetchRanking(
+  q: SortState & { cursor?: string },
+): Promise<{ rows: RankingRow[]; next?: string }> {
   const p = new URLSearchParams({ sort: q.sort, order: q.order })
   if (q.cursor) p.set("cursor", q.cursor)
   return requestJson(`/api/ranking?${p}`)
 }
 
 /** 存在しない(または対象外の)作業は null */
-export async function fetchDetail(taskId: string): Promise<RankingDetail | null> {
+export async function fetchDetail(
+  taskId: string,
+): Promise<RankingDetail | null> {
   try {
-    return await requestJson<RankingDetail>(`/api/ranking/detail?id=${encodeURIComponent(taskId)}`)
+    return await requestJson<RankingDetail>(
+      `/api/ranking/detail?id=${encodeURIComponent(taskId)}`,
+    )
   } catch (e) {
     if (e instanceof ApiError && e.status === 404) return null
     throw e

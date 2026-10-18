@@ -1,0 +1,23 @@
+.list {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: var(--dl-gap);
+  margin: 0;
+}
+
+/* 行ごとの囲みは、項目名と内容を同じ行に並べる */
+.row {
+  display: contents;
+}
+
+.term {
+  color: var(--dl-term-color);
+}
+
+.description {
+  margin: 0;
+}
+
+.breaks {
+  white-space: pre-wrap;
+}

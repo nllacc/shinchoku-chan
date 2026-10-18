@@ -6,7 +6,8 @@ import { varsOf } from "../../scripts/css-tokens.mjs"
 
 const root = join(import.meta.dirname, "../..")
 const real = () => loadFiles(root)
-const rules = (f: object) => checkTokenUsage(f as never).map((v: { rule: string }) => v.rule)
+const rules = (f: object) =>
+  checkTokenUsage(f as never).map((v: { rule: string }) => v.rule)
 
 describe("設計値の使い方の検査", () => {
   test("現在のスタイルに違反がない", () => {
@@ -33,13 +34,18 @@ describe("設計値の使い方の検査", () => {
 
   test("ui-foundation/AC-2: 0 の長さ・変数・@media の条件の幅は違反にならない", () => {
     const f = real()
-    f.modules = { "A.module.css": "@media (min-width: 480px) { .a { margin: 0; padding: var(--button-padding); } }" }
+    f.modules = {
+      "A.module.css":
+        "@media (min-width: 480px) { .a { margin: 0; padding: var(--button-padding); } }",
+    }
     expect(rules(f)).toEqual([])
   })
 
   test("ui-foundation/AC-3: 暗テーマの再定義は環境設定と手動指定で同じ値になる", () => {
     const css = readFileSync(join(root, "src/web/tokens/semantic.css"), "utf8")
-    const byMedia = varsOf(css, ':root:not([data-theme="light"])', { media: "@media (prefers-color-scheme: dark)" })
+    const byMedia = varsOf(css, ':root:not([data-theme="light"])', {
+      media: "@media (prefers-color-scheme: dark)",
+    })
     const byAttr = varsOf(css, ':root[data-theme="dark"]')
     expect(Object.keys(byAttr).length).toBeGreaterThan(0)
     expect(byMedia).toEqual(byAttr)

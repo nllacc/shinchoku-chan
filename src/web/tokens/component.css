@@ -58,13 +58,24 @@
 
   --ranking-gap: var(--spacing-control);
   --ranking-muted: var(--color-muted);
-  --ranking-state-padding: var(--spacing-state);
-  --ranking-skeleton-height: var(--size-skeleton-height);
-  --ranking-skeleton-bg: var(--color-skeleton);
-  --ranking-radius: var(--shape-radius-control);
-  --ranking-image-basis: var(--size-media-basis);
+
   --link-color: var(--color-primary);
-  --ranking-link-color: var(--color-primary);
+
+  --notice-padding: var(--spacing-state);
+  --notice-gap: var(--spacing-control);
+  --notice-info-color: var(--color-muted);
+  --notice-error-color: var(--color-danger);
+
+  --skeleton-height: var(--size-skeleton-height);
+  --skeleton-gap: var(--spacing-control);
+  --skeleton-radius: var(--shape-radius-control);
+  --skeleton-bg: var(--color-skeleton);
+
+  --dl-gap: var(--spacing-control);
+  --dl-term-color: var(--color-muted);
+
+  --figure-basis: var(--size-media-basis);
+  --figure-radius: var(--shape-radius-control);
 
   --header-bg: var(--color-surface-raised);
   --header-border-color: var(--color-border);

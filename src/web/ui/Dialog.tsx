@@ -1,4 +1,10 @@
-import { useEffect, useId, useRef, type KeyboardEvent, type ReactNode } from "react"
+import {
+  useEffect,
+  useId,
+  useRef,
+  type KeyboardEvent,
+  type ReactNode,
+} from "react"
 import { createPortal } from "react-dom"
 import styles from "./Dialog.module.css"
 import { useSlot } from "./UiProvider"
@@ -13,9 +19,17 @@ export type DialogProps = {
   actions?: ReactNode
 }
 
-const FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+const FOCUSABLE =
+  'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
 
-export function BaseDialog({ open, title, onClose, busy = false, children, actions }: DialogProps) {
+export function BaseDialog({
+  open,
+  title,
+  onClose,
+  busy = false,
+  children,
+  actions,
+}: DialogProps) {
   const titleId = useId()
   const panel = useRef<HTMLDivElement>(null)
   const previous = useRef<HTMLElement | null>(null)
@@ -40,7 +54,9 @@ export function BaseDialog({ open, title, onClose, busy = false, children, actio
       return close()
     }
     if (e.key !== "Tab") return
-    const items = [...(panel.current?.querySelectorAll<HTMLElement>(FOCUSABLE) ?? [])]
+    const items = [
+      ...(panel.current?.querySelectorAll<HTMLElement>(FOCUSABLE) ?? []),
+    ]
     if (items.length === 0) return e.preventDefault()
     const first = items[0]!
     const last = items[items.length - 1]!
@@ -54,8 +70,20 @@ export function BaseDialog({ open, title, onClose, busy = false, children, actio
   }
 
   return createPortal(
-    <div className={styles.overlay} onMouseDown={(e) => e.target === e.currentTarget && close()} onKeyDown={onKeyDown}>
-      <div ref={panel} className={styles.panel} role="dialog" aria-modal="true" aria-labelledby={titleId} tabIndex={-1} aria-busy={busy || undefined}>
+    <div
+      className={styles.overlay}
+      onMouseDown={(e) => e.target === e.currentTarget && close()}
+      onKeyDown={onKeyDown}
+    >
+      <div
+        ref={panel}
+        className={styles.panel}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
+        tabIndex={-1}
+        aria-busy={busy || undefined}
+      >
         <h2 id={titleId} className={styles.title}>
           {title}
         </h2>

@@ -1,0 +1,22 @@
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--header-gap);
+  padding: var(--header-padding);
+  background: var(--header-bg);
+  border-bottom: var(--header-border-width) solid var(--header-border-color);
+}
+
+.brand {
+  font-size: var(--header-title-size);
+  font-weight: bold;
+}
+
+.nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--header-gap);
+  margin-left: auto;
+}

@@ -22,9 +22,11 @@
 
 ## Phase 3: ダイアログと確認用の画面
 
-- 対応: D-6, D-7, D-8
+- 対応: D-6, D-7, D-8, D-9
 - [x] T-3.1: `src/web/ui/Dialog.tsx` にフォーカスの閉じ込めと閉じ方を実装する。
 - [x] T-3.2: `src/web/ui/Styleguide.tsx` に全部品の一覧を作成する。
 - [x] T-3.3: gzip 後の容量を検査するスクリプトをビルドに追加する。
-- 検証: `npm run build && npx vitest run tests/ui/size.test.ts`
+- [x] T-3.4: Select・Link・Notice・Skeleton・DescriptionList・Header・Figure の基底部品を追加し、Field と DataTable を含む全部品を差し替えの対象にする。
+- [x] T-3.5: `scripts/check-ui-usage.mjs` を実装し、画面の素の要素の使用を検査する。
+- 検証: `npm run build && npx vitest run tests/ui/size.test.ts tests/ui/usage.test.ts`
 - E2E: `tests/e2e/dialog.spec.ts` ダイアログを開き Tab を繰り返し Esc を押す → フォーカスが外へ出ず、Esc で閉じて元の要素へ戻る

@@ -1,0 +1,37 @@
+.select {
+  display: flex;
+  flex-direction: column;
+  gap: var(--field-gap);
+}
+
+.label {
+  font-size: var(--field-label-size);
+}
+
+.control {
+  min-height: var(--field-height);
+  padding: var(--field-padding);
+  border: var(--field-border-width) solid var(--field-border-color);
+  border-radius: var(--field-radius);
+  background: var(--field-bg);
+  color: var(--field-text);
+  font: inherit;
+  max-width: 100%;
+}
+
+.control:focus-visible {
+  outline: var(--focus-width) solid var(--focus-color);
+  outline-offset: var(--focus-width);
+}
+
+.hint {
+  margin: 0;
+  font-size: var(--field-label-size);
+  color: var(--field-hint-color);
+}
+
+.error {
+  margin: 0;
+  font-size: var(--field-label-size);
+  color: var(--field-error-color);
+}

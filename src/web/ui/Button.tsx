@@ -14,7 +14,15 @@ export type ButtonProps = {
   "aria-label"?: string
 }
 
-export function BaseButton({ kind = "primary", busy = false, disabled = false, type = "button", onClick, children, ...rest }: ButtonProps) {
+export function BaseButton({
+  kind = "primary",
+  busy = false,
+  disabled = false,
+  type = "button",
+  onClick,
+  children,
+  ...rest
+}: ButtonProps) {
   return (
     <button
       type={type}

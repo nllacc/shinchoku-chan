@@ -1,0 +1,10 @@
+.figure {
+  margin: 0;
+  flex: 1 1 var(--figure-basis);
+}
+
+.image {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--figure-radius);
+}

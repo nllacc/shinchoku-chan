@@ -30,44 +30,7 @@
   margin: var(--ranking-gap) 0;
 }
 
-.state {
-  padding: var(--ranking-state-padding);
-  text-align: center;
-  color: var(--ranking-muted);
-}
-
-.skeleton {
-  height: var(--ranking-skeleton-height);
-  margin-bottom: var(--ranking-gap);
-  border-radius: var(--ranking-radius);
-  background: var(--ranking-skeleton-bg);
-}
-
-.select {
-  min-height: var(--field-height);
-  padding: var(--field-padding);
-  border: var(--field-border-width) solid var(--field-border-color);
-  border-radius: var(--field-radius);
-  background: var(--field-bg);
-  color: var(--field-text);
-  font: inherit;
-  max-width: 100%;
-}
-
-.select:focus-visible,
-.link:focus-visible {
-  outline: var(--focus-width) solid var(--focus-color);
-  outline-offset: var(--focus-width);
-}
-
-.link {
-  color: var(--link-color);
-  /* ハンドルは「.」の位置以外では折り返さない */
-  overflow-wrap: normal;
-}
-
-.score,
-.nowrap {
+.score {
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
