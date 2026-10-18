@@ -72,6 +72,17 @@ const ENTITLEMENTS: Spec = {
   cols: [["did", "did", "s"], ["plan", "plan", "s"], ["flags", "flags", "s"], ["validUntil", "valid_until", "n"]],
 }
 
+/** 集合ごとの表の対応。運用スクリプト（移行）の対応表との一致を試験で確かめる */
+export const D1_SPECS = {
+  botSession: SESSION,
+  entitlements: ENTITLEMENTS,
+  plans: PLANS,
+  tasks: TASKS,
+  openCheckins: OPEN,
+  reports: REPORTS,
+  evaluations: EVALS,
+}
+
 const toDb = (v: unknown, k: Kind): unknown => {
   if (v === null || v === undefined) return null
   if (k === "b") return v ? 1 : 0

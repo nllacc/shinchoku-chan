@@ -38,7 +38,7 @@
 ## Phase 5: 運用スクリプト
 
 - 対応: D-13
-- [ ] T-5.1: `scripts/store-migrate.mjs` に書き出し・取り込み・照合を実装する。
-- [ ] T-5.2: 書き出した全行を memoryStore へ取り込み、件数と内容の一致と再実行の冪等性をテストする。
-- [ ] T-5.3: `scripts/bot-profile.mjs` に自己ラベルの確認と設定を実装し、終了コードをテストする。
+- [x] T-5.1: `scripts/store-migrate.mjs` に書き出し・取り込み・照合を実装する。
+- [x] T-5.2: 書き出した全行をメモリ上の保存先へ取り込み、件数と内容の一致と再実行の冪等性をテストする。
+- [x] T-5.3: `scripts/bot-profile.mjs` に自己ラベルの確認と設定を実装し、終了コードをテストする。
 - 検証: `npx vitest run tests/platform/migrate.test.ts tests/platform/botProfile.test.ts`

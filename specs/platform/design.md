@@ -58,8 +58,7 @@ flowchart LR
   rows -->|evaluationRowFromRecords| store
   d1Store --> ext_d1["D1"]
   migration["0001_init"] --> ext_d1
-  storeMigrate["store-migrate"] -->|exportAll importAll| ext_target["移行先の保存先"]
-  storeMigrate -->|verifyAll| memoryStore
+  storeMigrate["store-migrate"] -->|exportAll importAll verifyAll| ext_target["移行先の保存先"]
   storeMigrate --> ext_d1
   botProfile["bot-profile"] -->|checkLabel setLabel| ext_bpds["BotのPDS"]
 ```
@@ -352,9 +351,9 @@ D1 の実装は、列名をスネークケースへ対応させ、真偽は 0 �
 ### D-13: 運用スクリプト (FR-10, FR-11)
 
 ```js
-// node scripts/store-migrate.mjs export --from d1 --dir dump
-// node scripts/store-migrate.mjs import --to <移行先> --dir dump
-// node scripts/store-migrate.mjs verify --from d1 --to <移行先>
+// node scripts/store-migrate.mjs export --from d1:<名前> --dir dump
+// node scripts/store-migrate.mjs import --to d1:<名前> --dir dump
+// node scripts/store-migrate.mjs verify --from dir:dump --to d1:<名前>
 export async function exportAll(source, dir) // 集合ごとに <dir>/<集合>.jsonl を書き出す
 export async function importAll(target, dir) // 行を put で取り込む。何度実行しても結果が同じ
 export async function verifyAll(source, target) // 件数と、各行の JSON の正規形のハッシュを比べる
