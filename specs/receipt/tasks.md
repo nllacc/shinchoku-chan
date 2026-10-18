@@ -21,6 +21,6 @@
 ## Phase 3: 期限切れと再確認
 
 - 対応: D-6, D-7
-- [ ] T-3.1: `src/receipt/expire.ts` を実装し、定期実行へ登録する。
-- [ ] T-3.2: `src/receipt/recheck.ts` を実装し、改変・削除の検出と取消を単体テストにする。
+- [x] T-3.1: `src/receipt/expire.ts` を実装し、定期実行へ登録する。
+- [x] T-3.2: `src/receipt/recheck.ts` を実装し、改変・削除の検出と取消を単体テストにする。
 - 検証: `npx vitest run tests/receipt/expire.test.ts tests/receipt/recheck.test.ts`

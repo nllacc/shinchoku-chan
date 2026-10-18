@@ -18,7 +18,7 @@ function timedDb(db: D1Database, io: { ms: number }): D1Database {
         const v = (target as never)[prop]
         if (prop === "bind") return (...a: unknown[]) => stmt((target as { bind: (...x: unknown[]) => D1PreparedStatement }).bind(...a))
         if (prop === "run" || prop === "first" || prop === "all" || prop === "raw") return (...a: unknown[]) => timed(() => (v as (...x: unknown[]) => Promise<unknown>).apply(target, a))
-        return typeof v === "function" ? v.bind(target) : v
+        return typeof v === "function" ? (v as (...x: unknown[]) => unknown).bind(target) : v
       },
     })
   return new Proxy(db, {
