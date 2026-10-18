@@ -1,0 +1,37 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--dialog-padding);
+  background: var(--dialog-overlay);
+}
+
+.panel {
+  width: 100%;
+  max-width: var(--dialog-max-width);
+  max-height: 100%;
+  overflow: auto;
+  padding: var(--dialog-padding);
+  border: var(--dialog-border-width) solid var(--dialog-border-color);
+  border-radius: var(--dialog-radius);
+  background: var(--dialog-bg);
+  color: var(--dialog-text);
+}
+
+.panel:focus {
+  outline: none;
+}
+
+.title {
+  margin-top: 0;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--card-gap);
+  margin-top: var(--dialog-padding);
+}

@@ -37,6 +37,7 @@
   --dialog-radius: var(--shape-radius-panel);
   --dialog-padding: var(--spacing-block);
   --dialog-overlay: var(--color-overlay);
+  --dialog-max-width: var(--size-dialog-max);
   --dialog-border-color: var(--color-border);
   --dialog-border-width: var(--shape-border-width);
 

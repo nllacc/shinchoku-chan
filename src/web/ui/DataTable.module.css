@@ -1,0 +1,50 @@
+.wrap {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  color: var(--table-text);
+}
+
+.caption {
+  text-align: left;
+  color: var(--table-muted);
+  padding: var(--table-padding) 0;
+}
+
+.cell {
+  padding: var(--table-padding);
+  border-bottom: var(--table-border-width) solid var(--table-border-color);
+  text-align: left;
+}
+
+thead .cell {
+  background: var(--table-header-bg);
+}
+
+.sortButton {
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+.sortButton:focus-visible,
+.activatable:focus-visible {
+  outline: var(--focus-width) solid var(--focus-color);
+  outline-offset: var(--focus-width);
+}
+
+.activatable {
+  cursor: pointer;
+}
+
+.empty {
+  padding: var(--table-padding);
+  color: var(--table-muted);
+}

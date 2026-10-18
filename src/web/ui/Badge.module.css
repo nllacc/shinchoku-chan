@@ -1,0 +1,16 @@
+.badge {
+  display: inline-block;
+  padding: 0 var(--badge-padding);
+  border-radius: var(--badge-radius);
+  font-size: var(--badge-font-size);
+}
+
+.default {
+  background: var(--badge-bg);
+  color: var(--badge-text);
+}
+
+.danger {
+  background: var(--badge-danger-bg);
+  color: var(--badge-danger-text);
+}

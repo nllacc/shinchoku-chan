@@ -13,18 +13,18 @@
 ## Phase 2: 差し替えの仕組みと基底部品
 
 - 対応: D-4, D-5
-- [ ] T-2.1: `src/web/ui/UiProvider.tsx` に差し替えの文脈と取得の処理を実装する。
-- [ ] T-2.2: Button と Badge の基底部品を、スタイルとあわせて実装する。
-- [ ] T-2.3: Field と Card の基底部品を実装する。
-- [ ] T-2.4: DataTable の基底部品を実装する。
+- [x] T-2.1: `src/web/ui/UiProvider.tsx` に差し替えの文脈と取得の処理を実装する。
+- [x] T-2.2: Button と Badge の基底部品を、スタイルとあわせて実装する。
+- [x] T-2.3: Field と Card の基底部品を実装する。
+- [x] T-2.4: DataTable の基底部品を実装する。
 - 検証: `npx vitest run tests/ui/slots.test.tsx tests/ui/components.test.tsx`
 - E2E: `tests/e2e/components.spec.ts` 確認用の画面で全体の差し替えを指定する → すべてのボタンが差し替えた実装で表示される
 
 ## Phase 3: ダイアログと確認用の画面
 
 - 対応: D-6, D-7, D-8
-- [ ] T-3.1: `src/web/ui/Dialog.tsx` にフォーカスの閉じ込めと閉じ方を実装する。
-- [ ] T-3.2: `src/web/ui/Styleguide.tsx` に全部品の一覧を作成する。
-- [ ] T-3.3: gzip 後の容量を検査するスクリプトをビルドに追加する。
+- [x] T-3.1: `src/web/ui/Dialog.tsx` にフォーカスの閉じ込めと閉じ方を実装する。
+- [x] T-3.2: `src/web/ui/Styleguide.tsx` に全部品の一覧を作成する。
+- [x] T-3.3: gzip 後の容量を検査するスクリプトをビルドに追加する。
 - 検証: `npm run build && npx vitest run tests/ui/size.test.ts`
 - E2E: `tests/e2e/dialog.spec.ts` ダイアログを開き Tab を繰り返し Esc を押す → フォーカスが外へ出ず、Esc で閉じて元の要素へ戻る

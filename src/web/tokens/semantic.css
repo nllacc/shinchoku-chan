@@ -26,6 +26,7 @@
   --text-size-title: var(--font-size-4);
   --size-control-height: var(--size-touch);
   --size-content-max: var(--size-content);
+  --size-dialog-max: var(--size-dialog);
 }
 
 /* 暗テーマ。環境設定と手動の指定の両方を扱う */
