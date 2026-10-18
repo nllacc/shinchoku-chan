@@ -211,6 +211,8 @@ export interface Store {
   putPrompt(row: PromptRow): Promise<void>
   findPrompt(postUri: string): Promise<PromptRow | null>
   closePrompt(postUri: string): Promise<void>
+  closePromptsOf(acceptanceUri: string): Promise<void>
+  dropPlansOf(acceptanceUri: string): Promise<void> // pending の計画を dropped にする
   getKv(key: string): Promise<string | null>
   setKv(key: string, value: string): Promise<void>
 }
