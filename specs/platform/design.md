@@ -140,15 +140,16 @@ wrangler の cron は毎分（`* * * * *`）とする。処理は登録順に1�
 export function loadOptions(env: Env): Options
 ```
 
-| 名前               | 既定値 | 範囲               | 用途                          |
-| ------------------ | ------ | ------------------ | ----------------------------- |
-| FREE_MAX_ACTIVE    | 1      | 1 から 20          | 無料の同時進行数              |
-| PREMIUM_MAX_ACTIVE | 5      | 1 から 50          | 有料の同時進行数              |
-| PREMIUM_DIDS       | 空     | DID のカンマ区切り | 有料の資格を持つ DID          |
-| JOB_BATCH          | 10     | 1 から 40          | 1回の実行で処理する計画の件数 |
-| BOT_HANDLE         | なし   | 必須               | Bot のハンドル                |
-| BOT_DID            | なし   | 必須               | Bot の DID                    |
-| PUBLIC_ORIGIN      | なし   | 必須               | 画面の公開 URL                |
+| 名前               | 既定値 | 範囲               | 用途                           |
+| ------------------ | ------ | ------------------ | ------------------------------ |
+| FREE_MAX_ACTIVE    | 1      | 1 から 20          | 無料の同時進行数               |
+| PREMIUM_MAX_ACTIVE | 5      | 1 から 50          | 有料の同時進行数               |
+| PREMIUM_DIDS       | 空     | DID のカンマ区切り | 有料の資格を持つ DID           |
+| JOB_BATCH          | 10     | 1 から 40          | 1回の実行で処理する計画の件数  |
+| EVAL_WAIT_HOURS    | 72     | 1 から 168         | 評価依頼から期限切れまでの時間 |
+| BOT_HANDLE         | なし   | 必須               | Bot のハンドル                 |
+| BOT_DID            | なし   | 必須               | Bot の DID                     |
+| PUBLIC_ORIGIN      | なし   | 必須               | 画面の公開 URL                 |
 
 環境変数の値が型や範囲に合わないとき、既定値を使い、警告を記録する。必須の値が欠けたときは起動時に失敗する。秘密値は別に BOT_APP_PASSWORD と RKEY_SECRET を持つ。
 
