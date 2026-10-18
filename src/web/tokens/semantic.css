@@ -11,11 +11,15 @@
   --color-danger-text: var(--gray-0);
   --color-focus: var(--blue-500);
   --color-overlay: rgb(28 31 38 / 0.5);
+  --color-skeleton: var(--gray-100);
 
   --spacing-tight: var(--space-1);
   --spacing-control: var(--space-2);
   --spacing-block: var(--space-3);
   --spacing-section: var(--space-4);
+  --spacing-state: var(--space-5);
+  --size-skeleton-height: var(--size-skeleton);
+  --size-media-basis: var(--size-image-basis);
   --shape-radius-control: var(--radius-1);
   --shape-radius-panel: var(--radius-2);
   --shape-border-width: var(--border-width-1);
@@ -42,10 +46,12 @@
     --color-danger: var(--red-300);
     --color-danger-text: var(--gray-900);
     --color-focus: var(--blue-300);
+    --color-skeleton: var(--gray-700);
   }
 }
 
 :root[data-theme="dark"] {
+  --color-skeleton: var(--gray-700);
   --color-text: var(--gray-50);
   --color-surface: var(--gray-900);
   --color-surface-raised: var(--gray-800);

@@ -1,6 +1,6 @@
 // 使い方: node scripts/check-css-tokens.mjs  — 違反があれば一覧を出力して終了コード 1
-import { readFileSync, readdirSync } from "node:fs"
-import { join, resolve as pathResolve } from "node:path"
+import { readFileSync, readdirSync, statSync } from "node:fs"
+import { join, relative, resolve as pathResolve } from "node:path"
 import { parseBlocks, refsOf } from "./css-tokens.mjs"
 
 const COLOR = /#[0-9a-fA-F]{3,8}\b|\b(?:rgb|rgba|hsl|hsla|oklch|oklab)\(/
@@ -49,10 +49,17 @@ export function checkTokenUsage(files) {
 
 export function loadFiles(root) {
   const tokens = join(root, "src/web/tokens")
-  const ui = join(root, "src/web/ui")
   const read = (p) => readFileSync(p, "utf8")
   const modules = {}
-  for (const n of readdirSync(ui)) if (n.endsWith(".module.css")) modules[n] = read(join(ui, n))
+  // src/web 配下のすべての *.module.css を対象にする
+  const walk = (dir) => {
+    for (const n of readdirSync(dir)) {
+      const p = join(dir, n)
+      if (statSync(p).isDirectory()) walk(p)
+      else if (n.endsWith(".module.css")) modules[relative(root, p)] = read(p)
+    }
+  }
+  walk(join(root, "src/web"))
   return {
     primitive: read(join(tokens, "primitive.css")),
     semantic: read(join(tokens, "semantic.css")),

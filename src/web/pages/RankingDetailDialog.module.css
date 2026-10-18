@@ -1,0 +1,40 @@
+.list {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: var(--ranking-gap);
+  margin: 0;
+}
+
+.list dt {
+  color: var(--ranking-muted);
+}
+
+.list dd {
+  margin: 0;
+}
+
+.text {
+  white-space: pre-wrap;
+}
+
+.images {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ranking-gap);
+  margin-top: var(--ranking-gap);
+}
+
+.figure {
+  margin: 0;
+  flex: 1 1 var(--ranking-image-basis);
+}
+
+.image {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--ranking-radius);
+}
+
+.state {
+  color: var(--ranking-muted);
+}

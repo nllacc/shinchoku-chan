@@ -24,3 +24,14 @@ export function initTheme(): Theme {
   if (theme !== "system") document.documentElement.setAttribute("data-theme", theme)
   return theme
 }
+
+// 現在のテーマ(保存された値。なければ環境設定に従う)
+export function getTheme(): Theme {
+  try {
+    const v = localStorage.getItem(KEY)
+    if (v === "light" || v === "dark") return v
+  } catch {
+    // 読めない環境では環境設定に従う
+  }
+  return "system"
+}

@@ -9,6 +9,8 @@ export const PAIRS = [
   ["--color-primary-text", "--color-primary"],
   ["--color-danger-text", "--color-danger"],
   ["--color-muted", "--color-surface"],
+  ["--color-primary", "--color-surface"],
+  ["--color-primary", "--color-surface-raised"],
   ["--color-muted", "--color-surface-raised"],
 ]
 export const MIN_RATIO = 4.5

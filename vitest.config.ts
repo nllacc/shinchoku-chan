@@ -29,7 +29,7 @@ export default defineConfig({
         test: {
           name: "ui",
           environment: "jsdom",
-          include: ["tests/ui/**/*.test.{ts,tsx}"],
+          include: ["tests/ui/**/*.test.{ts,tsx}", "tests/web/**/*.test.{ts,tsx}"],
           setupFiles: ["./tests/ui/setup.ts"],
         },
       },

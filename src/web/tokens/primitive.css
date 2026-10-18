@@ -28,6 +28,9 @@
   --font-size-3: 20px;
   --font-size-4: 28px;
   --size-touch: 40px;
+  --size-skeleton: 56px;
+  --size-image-basis: 160px;
+  --space-5: 40px;
   --size-content: 960px;
   --size-dialog: 480px;
   --bp-1: 480px;

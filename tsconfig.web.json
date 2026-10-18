@@ -26,6 +26,7 @@
     "src/lexicon",
     "lexicons",
     "tests/ui",
+    "tests/web",
     "tests/e2e",
     "playwright.config.ts",
     "vite.config.ts",

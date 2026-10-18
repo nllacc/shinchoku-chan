@@ -1,0 +1,32 @@
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--header-gap);
+  padding: var(--header-padding);
+  background: var(--header-bg);
+  border-bottom: var(--header-border-width) solid var(--header-border-color);
+}
+
+.brand {
+  font-size: var(--header-title-size);
+  font-weight: bold;
+  color: inherit;
+  text-decoration: none;
+}
+
+.nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--header-gap);
+  margin-left: auto;
+}
+
+.link {
+  color: var(--link-color);
+}
+
+.theme {
+  font: inherit;
+}

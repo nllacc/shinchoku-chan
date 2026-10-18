@@ -4,17 +4,22 @@ import "./tokens/primitive.css"
 import "./tokens/semantic.css"
 import "./tokens/component.css"
 import "./global.css"
+import { App } from "./App"
+import { AuthProvider } from "./auth/AuthProvider"
 import { Styleguide } from "./ui/Styleguide"
 import { initTheme } from "./ui/theme"
 
 initTheme()
 
-// 経路ごとの画面。各画面の specs が追加する
-const pages: Record<string, () => ReactElement> = {
-  "/styleguide": Styleguide,
-}
-
-const Page = pages[location.pathname] ?? (() => <main className="page">準備中です</main>)
+// 見本の画面だけは枠組みの外で表示する
+const Page: () => ReactElement =
+  location.pathname === "/styleguide"
+    ? Styleguide
+    : () => (
+        <AuthProvider>
+          <App />
+        </AuthProvider>
+      )
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
